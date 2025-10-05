@@ -1,4 +1,4 @@
-# spending_tracker
+# new_spendz
 
 A new Flutter project.
 

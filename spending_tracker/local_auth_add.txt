@@ -1,0 +1,2 @@
+# Add local_auth for fingerprint authentication
+local_auth: ^2.1.7
