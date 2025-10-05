@@ -262,21 +262,42 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 },
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Text(
-                    dateTime == null
-                        ? 'No date/time selected'
-                        : 'Selected: '
-                              '${dateTime!.day}/${dateTime!.month}/${dateTime!.year} '
-                              '${dateTime!.hour.toString().padLeft(2, '0')}:${dateTime!.minute.toString().padLeft(2, '0')}',
-                  ),
-                  const SizedBox(width: 12),
-                  ElevatedButton(
-                    onPressed: () => _pickDateTime(context),
-                    child: const Text('Pick Date & Time'),
-                  ),
-                ],
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.black, width: 1),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        dateTime == null
+                            ? 'Select date and time'
+                            : '${dateTime!.day}/${dateTime!.month}/${dateTime!.year} '
+                                  '${dateTime!.hour.toString().padLeft(2, '0')}:${dateTime!.minute.toString().padLeft(2, '0')}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 40,
+                      width: 1,
+                      color: Colors.black,
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () => _pickDateTime(context),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 10),
               TextFormField(
