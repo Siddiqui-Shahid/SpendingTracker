@@ -129,9 +129,9 @@ class _BackupPageState extends State<BackupPage> {
   }
 
   Future<void> _performBackup(BuildContext context) async {
-    final expenseProvider = Provider.of<ExpenseData>(context, listen: false);
     final hive = HiveDataBase();
-    final List<ExpenseItem> expenses = expenseProvider.getExpenseList();
+    final expenseProvider = Provider.of<ExpenseData>(context, listen: false);
+    final List<ExpenseItem> expenses = hive.readData();
     final List<Map<String, dynamic>> expensesJson = expenses
         .map(
           (e) => {
@@ -143,11 +143,11 @@ class _BackupPageState extends State<BackupPage> {
         )
         .toList();
     final List<String> categories = hive.getCategory();
-    final double balance = expenseProvider.getBalance();
+    final double balance = hive.readBalance();
     final Map<String, dynamic> backupData = {
-      'balance': balance,
       'expenses': expensesJson,
       'categories': categories,
+      'balance': balance,
       // Add other fields as needed
     };
 
