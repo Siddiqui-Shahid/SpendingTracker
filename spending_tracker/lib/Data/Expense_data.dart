@@ -268,6 +268,7 @@ class ExpenseData extends ChangeNotifier {
   /// }
   /// ```
   void prepareData() {
+    debugPrint('[ExpenseData] prepareData called.');
     overallExpenseList = db.readData();
     notifyListeners();
   }
