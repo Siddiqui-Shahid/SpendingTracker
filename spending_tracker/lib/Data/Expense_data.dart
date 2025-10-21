@@ -32,7 +32,16 @@ class ExpenseData extends ChangeNotifier {
   }
 
   void setBalance(double balance) {
+    debugPrint(
+      '[ExpenseData] setBalance called with value: '
+      '[32m$balance[0m',
+    );
     db.saveBalance(balance);
+    final hiveBalance = db.readBalance();
+    debugPrint(
+      '[ExpenseData] Hive balance after save: '
+      '\u001b[36m$hiveBalance\u001b[0m',
+    );
     notifyListeners();
   }
 
@@ -62,9 +71,8 @@ class ExpenseData extends ChangeNotifier {
   }
 
   void prepareData() {
-    if (db.readData().isNotEmpty) {
-      overallExpenseList = db.readData();
-    }
+    overallExpenseList = db.readData();
+    notifyListeners();
   }
 
   void addExpense(ExpenseItem newExpense) {

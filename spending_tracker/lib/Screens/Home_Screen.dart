@@ -80,10 +80,18 @@ class _HomeScreenState extends State<HomeScreen> {
     double ffem = fem * 0.97;
     return Consumer<ExpenseData>(
       builder: (context, value, child) {
-        balance = Provider.of<ExpenseData>(context, listen: false).getBalance();
+        final balance = value.getBalance();
+        debugPrint('[HomeScreen] Consumer rebuilt. Current balance: $balance');
+        final expenseList = value.getExpenseList();
+        debugPrint('[HomeScreen] Expense list length: ${expenseList.length}');
         // Sort the expense list by dateTime descending (latest first)
-        final sortedExpenseList = List.from(value.getExpenseList())
+        final sortedExpenseList = List.from(expenseList)
           ..sort((a, b) => b.dateTime.compareTo(a.dateTime));
+        if (sortedExpenseList.isNotEmpty) {
+          debugPrint(
+            '[HomeScreen] First expense: ${sortedExpenseList.first.name}, amount: ${sortedExpenseList.first.amount}, date: ${sortedExpenseList.first.dateTime}',
+          );
+        }
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -362,7 +370,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          // ...existing code...
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddTransactionPage()),
+              );
+            },
+            child: const Icon(Icons.add),
+            backgroundColor: Colors.blue,
+          ),
         );
       },
     );

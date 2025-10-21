@@ -1,8 +1,18 @@
+import 'package:new_spendz/Data/hive_database.dart';
+import 'package:new_spendz/Model/Expense_item.dart';
+import 'package:new_spendz/Data/Expense_data.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
 
-class BackupPage extends StatelessWidget {
+class BackupPage extends StatefulWidget {
   const BackupPage({super.key});
+  @override
+  State<BackupPage> createState() => _BackupPageState();
+}
 
+class _BackupPageState extends State<BackupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,46 +60,6 @@ class BackupPage extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(height: 24),
-            const Text(
-              'Information',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue.withOpacity(0.3)),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.info, color: Colors.blue),
-                      SizedBox(width: 8),
-                      Text(
-                        'About Backup',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '• Backup includes all your expense data, categories, and settings\n'
-                    '• Backup files are saved in JSON format\n'
-                    '• You can restore your data on any device\n'
-                    '• Make regular backups to prevent data loss',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
@@ -99,27 +69,27 @@ class BackupPage extends StatelessWidget {
   void _showBackupDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.backup, color: Colors.blue),
-            SizedBox(width: 8),
-            Text('Backup Data'),
-          ],
-        ),
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Backup Data'),
         content: const Text(
-          'This will create a backup file with all your expense data, categories, and settings. The file will be saved to your device.',
+          'This will export your data to a backup file. You can restore your data on any device.',
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
-              _performBackup(context);
+              Navigator.pop(dialogContext);
+              Future.delayed(const Duration(milliseconds: 200), () {
+                if (mounted) _performBackup(context);
+              });
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+            ),
             child: const Text('Create Backup'),
           ),
         ],
@@ -130,26 +100,22 @@ class BackupPage extends StatelessWidget {
   void _showRestoreDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.restore, color: Colors.green),
-            SizedBox(width: 8),
-            Text('Restore Data'),
-          ],
-        ),
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Restore Data'),
         content: const Text(
           'This will replace all your current data with the data from the backup file. This action cannot be undone.',
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
-              _performRestore(context);
+              Navigator.pop(dialogContext);
+              Future.delayed(const Duration(milliseconds: 200), () {
+                if (mounted) restoreBackup(context);
+              });
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
@@ -162,15 +128,54 @@ class BackupPage extends StatelessWidget {
     );
   }
 
-  void _performBackup(BuildContext context) {
-    // TODO: Implement actual backup functionality
+  Future<void> _performBackup(BuildContext context) async {
+    final expenseProvider = Provider.of<ExpenseData>(context, listen: false);
+    final hive = HiveDataBase();
+    final List<ExpenseItem> expenses = expenseProvider.getExpenseList();
+    final List<Map<String, dynamic>> expensesJson = expenses
+        .map(
+          (e) => {
+            'name': e.name,
+            'amount': e.amount,
+            'date': e.dateTime.toIso8601String(),
+            'type': e.type,
+          },
+        )
+        .toList();
+    final List<String> categories = hive.getCategory();
+    final double balance = expenseProvider.getBalance();
+    final Map<String, dynamic> backupData = {
+      'balance': balance,
+      'expenses': expensesJson,
+      'categories': categories,
+      // Add other fields as needed
+    };
+
+    final bytes = utf8.encode(jsonEncode(backupData));
+    final fileName =
+        'spending_tracker_backup_${DateTime.now().millisecondsSinceEpoch}.json';
+    final savePath = await FilePicker.platform.saveFile(
+      dialogTitle: 'Select location to save backup',
+      fileName: fileName,
+      bytes: bytes,
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
+    if (savePath == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Backup cancelled or failed.')),
+      );
+      return;
+    }
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Row(
+        content: Row(
           children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 8),
-            Text('Backup created successfully'),
+            const Icon(Icons.check_circle, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(child: Text('Backup created at:\n$savePath')),
           ],
         ),
         backgroundColor: Colors.green,
@@ -178,27 +183,97 @@ class BackupPage extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
+        duration: const Duration(seconds: 6),
       ),
     );
   }
 
-  void _performRestore(BuildContext context) {
-    // TODO: Implement actual restore functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Row(
-          children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 8),
-            Text('Data restored successfully'),
-          ],
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
-    );
+  Future<void> restoreBackup(BuildContext context) async {
+    final hive = HiveDataBase();
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        withData: true,
+      );
+      if (result == null || result.files.isEmpty) {
+        return;
+      }
+      final file = result.files.first;
+      final fileBytes = file.bytes;
+      if (fileBytes == null) {
+        return;
+      }
+      final jsonString = utf8.decode(fileBytes);
+      final decoded = jsonDecode(jsonString);
+
+      // Update balance in provider if present in backup
+      final expenseProvider = Provider.of<ExpenseData>(context, listen: false);
+      if (decoded['balance'] != null) {
+        try {
+          final double restoredBalance = decoded['balance'] is num
+              ? (decoded['balance'] as num).toDouble()
+              : double.tryParse(decoded['balance'].toString()) ?? 0.0;
+          debugPrint(
+            '[BackupPage] Restoring balance from backup: '
+            '\u001b[33m$restoredBalance\u001b[0m',
+          );
+          expenseProvider.setBalance(restoredBalance);
+        } catch (e) {
+          debugPrint('Failed to set restored balance: $e');
+        }
+      }
+
+      // Restore categories
+      if (decoded['categories'] != null && decoded['categories'] is List) {
+        final List<String> categories = List<String>.from(
+          decoded['categories'],
+        );
+        try {
+          hive.setCategory(categories);
+        } catch (e) {
+          debugPrint('Failed to set categories: $e');
+        }
+      }
+
+      // Restore expenses
+      if (decoded['expenses'] != null && decoded['expenses'] is List) {
+        List<ExpenseItem> expenses = [];
+        for (var e in decoded['expenses']) {
+          try {
+            expenses.add(
+              ExpenseItem(
+                name: e['name'] ?? e['category'] ?? '',
+                amount: e['amount'].toString(),
+                dateTime:
+                    DateTime.tryParse(e['date'] ?? e['dateTime'] ?? '') ??
+                    DateTime.now(),
+                type: e['type'] ?? 'expense',
+              ),
+            );
+          } catch (err) {
+            debugPrint('Failed to parse expense: $err');
+          }
+        }
+        try {
+          hive.saveData(expenses);
+        } catch (e) {
+          debugPrint('Failed to save expenses to Hive: $e');
+        }
+      }
+
+      // Notify expense provider to refresh data
+      expenseProvider.prepareData();
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Backup restored successfully!')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to restore backup.')),
+      );
+    }
   }
 }
