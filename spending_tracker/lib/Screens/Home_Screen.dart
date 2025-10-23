@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:new_spendz/Screens/Balance_Overview.dart';
+import 'package:new_spendz/Screens/Analysis_Screen.dart';
 import '../Data/Expense_data.dart';
 import '../Model/Expense_item.dart';
 import 'Settings.dart';
@@ -326,6 +327,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             isEditMode = !isEditMode;
                           });
                         },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.pie_chart_outline),
+                  tooltip: 'Analysis',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AnalysisScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
               elevation: 0,
