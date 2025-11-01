@@ -5,17 +5,17 @@ A modern, secure Flutter application for tracking personal finances with biometr
 ## � Screenshots
 
 <div align="center">
-  <img src="screenshot/Screenshot_2025-11-01-11-59-15-297_com.example.new_spendz.jpg" width="200" alt="Home Screen - Balance Overview"/>
-  <img src="screenshot/Screenshot_2025-11-01-12-12-40-926_com.example.new_spendz.jpg" width="200" alt="Transaction Management"/>
-  <img src="screenshot/Screenshot_2025-11-01-12-13-05-626_com.example.new_spendz.jpg" width="200" alt="Add Transaction"/>
-  <img src="screenshot/Screenshot_2025-11-01-12-13-19-165_com.example.new_spendz.jpg" width="200" alt="Analysis Screen"/>
+   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-11-59-15-297_com.example.new_spendz.jpg" width="200" alt="Home Screen - Balance Overview"/>
+   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-12-40-926_com.example.new_spendz.jpg" width="200" alt="Transaction Management"/>
+   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-05-626_com.example.new_spendz.jpg" width="200" alt="Add Transaction"/>
+   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-19-165_com.example.new_spendz.jpg" width="200" alt="Analysis Screen"/>
 </div>
 
 <div align="center">
-  <img src="screenshot/Screenshot_2025-11-01-12-13-22-953_com.example.new_spendz.jpg" width="200" alt="Period Filter"/>
-  <img src="screenshot/Screenshot_2025-11-01-12-13-26-451_com.example.new_spendz.jpg" width="200" alt="Category Pie Chart"/>
-  <img src="screenshot/Screenshot_2025-11-01-12-13-33-554_com.example.new_spendz.jpg" width="200" alt="Settings Screen"/>
-  <img src="screenshot/Screenshot_2025-11-01-12-16-43-979_com.example.new_spendz.jpg" width="200" alt="Backup & Restore"/>
+   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-22-953_com.example.new_spendz.jpg" width="200" alt="Period Filter"/>
+   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-26-451_com.example.new_spendz.jpg" width="200" alt="Category Pie Chart"/>
+   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-33-554_com.example.new_spendz.jpg" width="200" alt="Settings Screen"/>
+   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-16-43-979_com.example.new_spendz.jpg" width="200" alt="Backup & Restore"/>
 </div>
 
 *Experience the clean, intuitive interface designed for efficient expense tracking*
