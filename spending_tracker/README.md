@@ -2,7 +2,25 @@
 
 A modern, secure Flutter application for tracking personal finances with biometric authentication, expense management, and insightful financial overview.
 
-## 📋 Table of Contents
+## � Screenshots
+
+<div align="center">
+  <img src="screenshot/Screenshot_2025-11-01-11-59-15-297_com.example.new_spendz.jpg" width="200" alt="Home Screen - Balance Overview"/>
+  <img src="screenshot/Screenshot_2025-11-01-12-12-40-926_com.example.new_spendz.jpg" width="200" alt="Transaction Management"/>
+  <img src="screenshot/Screenshot_2025-11-01-12-13-05-626_com.example.new_spendz.jpg" width="200" alt="Add Transaction"/>
+  <img src="screenshot/Screenshot_2025-11-01-12-13-19-165_com.example.new_spendz.jpg" width="200" alt="Analysis Screen"/>
+</div>
+
+<div align="center">
+  <img src="screenshot/Screenshot_2025-11-01-12-13-22-953_com.example.new_spendz.jpg" width="200" alt="Period Filter"/>
+  <img src="screenshot/Screenshot_2025-11-01-12-13-26-451_com.example.new_spendz.jpg" width="200" alt="Category Pie Chart"/>
+  <img src="screenshot/Screenshot_2025-11-01-12-13-33-554_com.example.new_spendz.jpg" width="200" alt="Settings Screen"/>
+  <img src="screenshot/Screenshot_2025-11-01-12-16-43-979_com.example.new_spendz.jpg" width="200" alt="Backup & Restore"/>
+</div>
+
+*Experience the clean, intuitive interface designed for efficient expense tracking*
+
+## �📋 Table of Contents
 
 - [Features](#features)
 - [Project Structure](#project-structure)
@@ -17,28 +35,35 @@ A modern, secure Flutter application for tracking personal finances with biometr
 
 ## ✨ Features
 
-### Core Features
-- **Expense Tracking**: Record, categorize, and manage income and expense transactions
-- **Balance Management**: Real-time balance calculation and tracking
-- **Transaction History**: Comprehensive history of all financial transactions
-- **Edit & Delete**: Modify or remove transactions as needed
+### 🏠 Dashboard & Overview
+- **Clean Home Screen**: Real-time balance display with intuitive transaction history
+- **Smart Balance Card**: Tappable balance overview with quick navigation to analysis
+- **Transaction Timeline**: Chronological view of all income and expense entries
+- **Monthly Navigation**: Easy month-by-month browsing of financial data
 
-### Security
-- **Biometric Authentication**: Secure fingerprint/face recognition authentication
-- **App Lock**: Protect sensitive financial data with local authentication
-- **Settings Customization**: Enable/disable biometric security as needed
+### 📊 Advanced Analytics  
+- **Visual Pie Charts**: Category-wise spending breakdown with distinct colors
+- **Custom Period Filters**: Built-in periods (Today, Week, Month, Year) plus custom date ranges
+- **Spending Insights**: Detailed analysis of your financial patterns
+- **Interactive Charts**: Tap and explore your spending categories
 
-### User Experience
-- **Intuitive Dashboard**: Clean home screen displaying current balance and recent transactions
-- **Transaction Management**: Easy-to-use interface for adding and managing transactions
-- **Balance Overview**: Visual representation of financial overview
-- **Settings Panel**: Comprehensive app settings and configuration options
+### 💰 Transaction Management
+- **Quick Add**: Streamlined transaction entry with smart categorization
+- **Edit & Delete**: Modify or remove transactions with simple gestures
+- **Income vs Expense**: Clear distinction between money in and money out
+- **Date Selection**: Flexible date picker for accurate record keeping
 
-### Data Management
-- **Local Storage**: Hive-based persistent data storage
-- **No Cloud Dependencies**: All data stored locally on device
-- **Data Export**: Export transaction history to files
-- **Data Reset**: Clear all data with a single action
+### 🔒 Security & Privacy
+- **Biometric Authentication**: Secure fingerprint/face recognition login
+- **Local Storage Only**: All data stays on your device - no cloud dependencies
+- **App Lock Protection**: Protect sensitive financial information
+- **Retry Mechanism**: Smart authentication with fallback options
+
+### ⚙️ Customization & Settings
+- **Currency Selection**: Choose from multiple currency symbols (₹, $, €)
+- **Theme Options**: Clean, modern interface that adapts to your preferences  
+- **Backup & Restore**: Export your data for safekeeping
+- **Quick Reset**: Start fresh when needed with secure data clearing
 
 ## 🏗️ Project Structure
 
@@ -92,6 +117,8 @@ lib/
    ```bash
    flutter run
    ```
+   
+   > 💡 **Tip**: Check out the [screenshots above](#-screenshots) to see what the app looks like in action!
 
 4. **Build for production**
    
