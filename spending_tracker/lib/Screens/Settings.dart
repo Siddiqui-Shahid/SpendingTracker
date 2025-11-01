@@ -96,7 +96,9 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> currency = ["None", "Rupee - ₹", "Dollar - \$ ", "Euro - €"];
     List<int> cur = [0, 1, 2, 3];
-    final toLaunch = Uri.parse('https://github.com/gautham2k3/SpendZ');
+    final toLaunch = Uri.parse(
+      'https://github.com/Siddiqui-Shahid/SpendingTracker',
+    );
     // Move mutable fields to local variables
     return Consumer<ExpenseData>(
       builder: (context, value, child) {

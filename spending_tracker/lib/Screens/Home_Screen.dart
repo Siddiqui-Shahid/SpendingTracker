@@ -328,18 +328,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                         },
                 ),
-                IconButton(
-                  icon: const Icon(Icons.pie_chart_outline),
-                  tooltip: 'Analysis',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AnalysisScreen(),
-                      ),
-                    );
-                  },
-                ),
               ],
               elevation: 0,
               backgroundColor: Colors.transparent,
@@ -347,109 +335,115 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             body: Column(
               children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(
-                    16 * fem,
-                    10 * fem,
-                    16 * fem,
-                    16 * fem,
-                  ),
-                  width: double.infinity,
-                  height: 110 * fem,
-                  decoration: BoxDecoration(
-                    color: const Color(0xfff2f2f7),
+                Material(
+                  color: const Color(0xfff2f2f7),
+                  borderRadius: BorderRadius.circular(13 * fem),
+                  child: InkWell(
                     borderRadius: BorderRadius.circular(13 * fem),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0 * fem,
-                        top: 0 * fem,
-                        child: Align(
-                          child: SizedBox(
-                            width: 343 * fem,
-                            height: 110 * fem,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12 * fem),
-                                color: const Color(0x99007aff),
-                              ),
-                            ),
-                          ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AnalysisScreen(),
                         ),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(
+                        16 * fem,
+                        10 * fem,
+                        16 * fem,
+                        16 * fem,
                       ),
-                      Positioned(
-                        left: 16 * fem,
-                        top: 45 * fem,
-                        child: Align(
-                          child: SizedBox(
-                            width: 140 * fem,
-                            height: 42 * fem,
-                            child: Text(
-                              '$balance',
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 34 * ffem,
-                                fontWeight: FontWeight.w700,
-                                height: 1.2125 * ffem / fem,
-                                letterSpacing: -0.3700000048 * fem,
-                                color: const Color(0xffffffff),
-                              ),
-                            ),
-                          ),
-                        ),
+                      width: double.infinity,
+                      height: 110 * fem,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(13 * fem),
                       ),
-                      Positioned(
-                        left: 16 * fem,
-                        top: 24 * fem,
-                        child: Align(
-                          child: SizedBox(
-                            width: 83 * fem,
-                            height: 20 * fem,
-                            child: Text(
-                              'My Balance',
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 15 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.3333333333 * ffem / fem,
-                                color: const Color(0xffffffff),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 300 * fem,
-                        top: 30 * fem,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    BalanceOverview(number: balance.toInt()),
-                              ),
-                            );
-                          },
-                          child: Align(
-                            child: SizedBox(
-                              width: 40 * fem,
-                              height: 50 * fem,
-                              child: Center(
-                                child: Center(
-                                  child: Icon(
-                                    Icons.navigate_next_rounded,
-                                    size: 35 * fem,
-                                    color: Colors.white,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 0 * fem,
+                            top: 0 * fem,
+                            child: Align(
+                              child: SizedBox(
+                                width: 343 * fem,
+                                height: 110 * fem,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      12 * fem,
+                                    ),
+                                    color: const Color(0x99007aff),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                          Positioned(
+                            left: 16 * fem,
+                            top: 45 * fem,
+                            child: Align(
+                              child: SizedBox(
+                                width: 140 * fem,
+                                height: 42 * fem,
+                                child: Text(
+                                  '$balance',
+                                  style: SafeGoogleFont(
+                                    'Inter',
+                                    fontSize: 34 * ffem,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.2125 * ffem / fem,
+                                    letterSpacing: -0.3700000048 * fem,
+                                    color: const Color(0xffffffff),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 16 * fem,
+                            top: 24 * fem,
+                            child: Align(
+                              child: SizedBox(
+                                width: 83 * fem,
+                                height: 20 * fem,
+                                child: Text(
+                                  'My Balance',
+                                  style: SafeGoogleFont(
+                                    'Inter',
+                                    fontSize: 15 * ffem,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.3333333333 * ffem / fem,
+                                    color: const Color(0xffffffff),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 300 * fem,
+                            top: 30 * fem,
+                            child: Align(
+                              child: SizedBox(
+                                width: 40 * fem,
+                                height: 50 * fem,
+                                child: Center(
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.navigate_next_rounded,
+                                      size: 35 * fem,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
