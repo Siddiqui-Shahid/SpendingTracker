@@ -82,11 +82,11 @@ class _TabsManager extends State<TabsManager> {
     }
     bool authenticated = false;
     while (_attempts < _maxAttempts && !authenticated) {
-          try {
-            authenticated = await auth.authenticate(
-              localizedReason: 'Authenticate to access the app',
-              // options removed for latest local_auth API compatibility
-            );
+      try {
+        authenticated = await auth.authenticate(
+          localizedReason: 'Authenticate to access the app',
+          // options removed for latest local_auth API compatibility
+        );
       } catch (e) {
         debugPrint('Biometric error: $e');
         authenticated = false;
