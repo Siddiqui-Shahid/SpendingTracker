@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.new_spendz"
-    compileSdk = flutter.compileSdkVersion
+        compileSdk = 36 // Required by plugins as of 2026
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -22,10 +22,9 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.new_spendz"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        // Set explicit SDK versions for modern compatibility
+        minSdk = flutter.minSdkVersion // Android 6.0+
+            targetSdk = 36 // Required by plugins as of 2026
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

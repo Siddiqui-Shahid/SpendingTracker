@@ -21,8 +21,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // Month filter variables
-  late DateTime selectedMonth;
-  late List<DateTime> availableMonths;
+  late DateTime selectedMonth = DateTime.now();
+  late List<DateTime> availableMonths = [DateTime.now()];
 
   // State variables
   bool isEditMode = false;
@@ -49,14 +49,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ExpenseData>(context, listen: false).prepareData();
-
-    // Delay the call to _initializeAvailableMonths until after the first frame
+    // Delay any state-changing calls to after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ExpenseData>(context, listen: false).prepareData();
       _initializeAvailableMonths();
+      refreshB();
     });
-
-    refreshB();
   }
 
   void _initializeAvailableMonths() {

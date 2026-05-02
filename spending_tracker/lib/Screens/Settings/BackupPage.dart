@@ -4,6 +4,7 @@ import 'package:new_spendz/Data/Expense_data.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
+import 'dart:io';
 import 'package:provider/provider.dart';
 
 class BackupPage extends StatefulWidget {
@@ -154,10 +155,10 @@ class _BackupPageState extends State<BackupPage> {
     final bytes = utf8.encode(jsonEncode(backupData));
     final fileName =
         'spending_tracker_backup_${DateTime.now().millisecondsSinceEpoch}.json';
-    final savePath = await FilePicker.platform.saveFile(
+    // The new file_picker API does not support 'bytes' in saveFile. Save to file after getting path.
+    final savePath = await FilePicker.saveFile(
       dialogTitle: 'Select location to save backup',
       fileName: fileName,
-      bytes: bytes,
       type: FileType.custom,
       allowedExtensions: ['json'],
     );
@@ -168,6 +169,8 @@ class _BackupPageState extends State<BackupPage> {
       );
       return;
     }
+    // Write the bytes to the selected file path
+    final file = await File(savePath).writeAsBytes(bytes);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -191,7 +194,7 @@ class _BackupPageState extends State<BackupPage> {
   Future<void> restoreBackup(BuildContext context) async {
     final hive = HiveDataBase();
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
+      FilePickerResult? result = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
         withData: true,
