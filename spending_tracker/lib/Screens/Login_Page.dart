@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import '../core/constants/app_strings.dart';
+import '../presentation/widgets/widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,15 +10,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool passwordVisible=false;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.indigo.shade200,
-        appBar: AppBar(
-          title:const Text("Coming Soon",),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(AppStrings.comingSoon),
+        centerTitle: true,
+      ),
+      body: StitchEmptyState(
+        icon: Icons.lock_clock_rounded,
+        title: AppStrings.comingSoon,
+        message:
+            'Account sign-in is on the roadmap. For now, manage your spending locally with ${AppStrings.appName}.',
       ),
     );
   }

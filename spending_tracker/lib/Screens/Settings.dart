@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:new_spendz/Data/Expense_data.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -5,9 +6,52 @@ import 'Settings/Categories.dart';
 import 'Settings/BackupPage.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_icons/simple_icons.dart';
+import '../presentation/widgets/widgets.dart';
 
 class Settings extends StatelessWidget {
-  Settings({super.key});
+  const Settings({super.key, this.asTab = false});
+
+  final bool asTab;
+
+  static final Uri _githubRepoUrl = Uri.parse(
+    'https://github.com/Siddiqui-Shahid/SpendingTracker/tree/main',
+  );
+
+  Future<void> _launchGitHub(BuildContext context) async {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
+    if (!await canLaunchUrl(_githubRepoUrl)) {
+      messenger?.showSnackBar(
+        const SnackBar(content: Text('Could not open GitHub in browser')),
+      );
+      return;
+    }
+
+    try {
+      // Dismiss settings on Android before launching so the browser opens in
+      // the default app instead of an in-app Custom Tab overlay that can hang.
+      if (defaultTargetPlatform == TargetPlatform.android &&
+          context.mounted &&
+          !asTab) {
+        Navigator.of(context).pop();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      }
+
+      final launched = await launchUrl(
+        _githubRepoUrl,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!launched) {
+        messenger?.showSnackBar(
+          const SnackBar(content: Text('Could not open GitHub in browser')),
+        );
+      }
+    } catch (_) {
+      messenger?.showSnackBar(
+        const SnackBar(content: Text('Could not open GitHub in browser')),
+      );
+    }
+  }
 
   void handleTap(BuildContext context) {
     Navigator.push(
@@ -23,97 +67,50 @@ class Settings extends StatelessWidget {
     );
   }
 
-  SimpleDialog CurencyHandler(
-    BuildContext context,
-    int selectedCurrency,
-    List<String> currency,
-    List<int> cur,
-  ) {
-    return SimpleDialog(
-      title: const Text('Select Currency'),
-      children: cur
-          .map(
-            (r) => RadioListTile(
-              title: Text(currency[r]),
-              groupValue: selectedCurrency,
-              selected: r == selectedCurrency,
-              value: r,
-              onChanged: (dynamic val) {
-                selectedCurrency = val;
-                Provider.of<ExpenseData>(
-                  context,
-                  listen: false,
-                ).addSettings(0, r);
-                Navigator.of(context).pop();
-              },
-            ),
-          )
-          .toList(),
-    );
-  }
-
   void showAlertDialog(BuildContext context) {
-    showDialog<String>(
+    StitchConfirmationDialog.show(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Erase All Data'),
-        content: const Text(
+      title: 'Erase All Data',
+      message:
           'All the existing data will be erased and reset to default. This cannot be undone.',
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'Cancel'),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              await Provider.of<ExpenseData>(
-                context,
-                listen: false,
-              ).eraseAndResetAll();
-              Navigator.pop(context, 'ERASE');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('All Data Erased and Reset to Default'),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-              );
-            },
-            child: const Text('ERASE', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
+      icon: Icons.phonelink_erase_rounded,
+      destructive: true,
+      secondaryLabel: 'Cancel',
+      primaryLabel: 'ERASE',
+      onSecondary: () {},
+      onPrimary: () async {
+        await Provider.of<ExpenseData>(
+          context,
+          listen: false,
+        ).eraseAndResetAll();
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('All Data Erased and Reset to Default'),
+            ),
+          );
+        }
+      },
     );
   }
 
-  bool lockAppSwitchVal = true;
-  bool changePassSwitchVal = true;
 
   @override
   Widget build(BuildContext context) {
-    List<String> currency = ["None", "Rupee - ₹", "Dollar - \$ ", "Euro - €"];
-    List<int> cur = [0, 1, 2, 3];
-    final toLaunch = Uri.parse(
-      'https://github.com/Siddiqui-Shahid/SpendingTracker',
-    );
-    // Move mutable fields to local variables
     return Consumer<ExpenseData>(
       builder: (context, value, child) {
         // Get fingerprint state from provider (savedSettings[2])
         bool fingerprintSwitchVal = value.getFingerprintEnabled();
-        int selectedCurrency = value.getSavedSettings(1);
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.navigate_before_rounded),
-              iconSize: 30,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+            automaticallyImplyLeading: !asTab,
+            leading: asTab
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.navigate_before_rounded),
+                    iconSize: 30,
+                    onPressed: () => Navigator.pop(context),
+                  ),
             title: const Text('Settings'),
             centerTitle: true,
           ),
@@ -121,51 +118,35 @@ class Settings extends StatelessWidget {
             slivers: [
               SliverToBoxAdapter(
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(StitchSpacing.md),
                   alignment: Alignment.center,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [Text("Common")],
+                      const StitchSectionHeader(
+                        title: 'Common',
+                        compact: true,
+                        padding: EdgeInsets.zero,
                       ),
-                      ListTile(
-                        leading: const Icon(Icons.currency_exchange),
-                        title: const Text("Currency"),
-                        subtitle: Text(currency[selectedCurrency]),
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return CurencyHandler(
-                                context,
-                                selectedCurrency,
-                                currency,
-                                cur,
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.category_rounded),
-                        title: const Text("Categories"),
+                      StitchListTile(
+                        leadingIcon: Icons.category_rounded,
+                        title: 'Categories',
+                        subtitle: 'Add or Remove',
                         trailing: const Icon(Icons.keyboard_arrow_right),
-                        subtitle: const Text("Add or Remove"),
                         onTap: () => handleTap(context),
                       ),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [Text("Security")],
+                      const StitchSectionHeader(
+                        title: 'Security',
+                        compact: true,
+                        padding: EdgeInsets.zero,
                       ),
-                      ListTile(
-                        leading: const Icon(Icons.fingerprint),
-                        title: const Text("Use fingerprint"),
+                      StitchListTile(
+                        leadingIcon: Icons.fingerprint,
+                        title: 'Biometric unlock',
+                        subtitle:
+                            'Require fingerprint or face to open the app',
                         trailing: Switch(
                           value: fingerprintSwitchVal,
-                          activeColor: Colors.blueAccent,
                           onChanged: (val) {
                             Provider.of<ExpenseData>(
                               context,
@@ -174,61 +155,39 @@ class Settings extends StatelessWidget {
                           },
                         ),
                       ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.lock),
-                        title: const Text("Change Password"),
-                        trailing: Switch(
-                          value: changePassSwitchVal,
-                          activeColor: Colors.blueAccent,
-                          onChanged: (val) {},
-                        ),
+                      const StitchSectionHeader(
+                        title: 'Data',
+                        compact: true,
+                        padding: EdgeInsets.zero,
                       ),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [Text("Data")],
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.backup, color: Colors.blue),
-                        title: const Text("Backup & Restore"),
-                        subtitle: const Text("Backup or restore your data"),
+                      StitchListTile(
+                        leadingIcon: Icons.backup,
+                        title: 'Backup & Restore',
+                        subtitle: 'Backup or restore your data',
                         trailing: const Icon(Icons.keyboard_arrow_right),
                         onTap: () => handleBackupTap(context),
                       ),
                       const Divider(),
-                      ListTile(
-                        leading: const Icon(
-                          Icons.phonelink_erase_rounded,
-                          color: Colors.red,
-                        ),
-                        title: const Text(
-                          "Erase all Data",
-                          selectionColor: Colors.red,
-                        ),
+                      StitchListTile(
+                        leadingIcon: Icons.phonelink_erase_rounded,
+                        title: 'Erase all Data',
+                        destructive: true,
                         onTap: () => showAlertDialog(context),
                       ),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [Text("Social")],
+                      const StitchSectionHeader(
+                        title: 'Social',
+                        compact: true,
+                        padding: EdgeInsets.zero,
                       ),
                       const Divider(),
-                      ListTile(
+                      StitchListTile(
                         leading: const Icon(
                           SimpleIcons.github,
-                          color: Colors.black,
                         ),
-                        title: const Text("GitHub"),
-                        subtitle: const Text('Star & Share the Repo'),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.open_in_new),
-                          tooltip: 'Open Link in Browser',
-                          onPressed: () {
-                            launchUrl(
-                              toLaunch,
-                              mode: LaunchMode.externalApplication,
-                            );
-                          },
-                        ),
+                        title: 'GitHub',
+                        subtitle: 'Star & Share the Repo',
+                        trailing: const Icon(Icons.open_in_new),
+                        onTap: () => _launchGitHub(context),
                       ),
                       const Divider(),
                     ],

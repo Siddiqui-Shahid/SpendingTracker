@@ -1,9 +1,49 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../Model/Expense_item.dart';
+import 'seed_data.dart';
 
 class HiveDataBase {
+  static const _initialSeedCompleteKey = 'InitialSeedComplete';
+
+  /// Seeds sample data on the very first app launch only.
+  Future<void> seedIfFirstLaunch() async {
+    if (_myBox.get(_initialSeedCompleteKey) == true) {
+      return;
+    }
+
+    final existingExpenses = _myBox.get("All Expenses");
+    if (existingExpenses != null && (existingExpenses as List).isNotEmpty) {
+      await _myBox.put(_initialSeedCompleteKey, true);
+      return;
+    }
+
+    if (_myBox.get("Category") == null) {
+      await _myBox.put("Category", [
+        '🎓 Education',
+        '🍔 Food',
+        '✈️ Travel',
+        '📦 Miscellaneous',
+        '💊 Health',
+        '🛍️ Shopping',
+        '💡 Bills',
+        '🎬 Entertainment',
+        '🛒 Groceries',
+        '🎁 Gifts',
+      ]);
+    }
+
+    final sampleTransactions = generateSampleTransactions(
+      endDate: DateTime.now(),
+      monthCount: 10,
+    );
+    saveData(sampleTransactions);
+    saveBalance(calculateBalance(sampleTransactions));
+    await _myBox.put(_initialSeedCompleteKey, true);
+  }
+
   // Erase all data and reset to defaults
   Future<void> eraseAndReset() async {
+    final seedComplete = _myBox.get(_initialSeedCompleteKey);
     await _myBox.clear();
     // Set default categories
     await _myBox.put("Category", [
@@ -25,6 +65,9 @@ class HiveDataBase {
     await _myBox.put("FingerprintEnabled", 0);
     // Remove all expenses
     await _myBox.put("All Expenses", []);
+    if (seedComplete == true) {
+      await _myBox.put(_initialSeedCompleteKey, true);
+    }
   }
 
   // Save fingerprint setting (0 or 1)

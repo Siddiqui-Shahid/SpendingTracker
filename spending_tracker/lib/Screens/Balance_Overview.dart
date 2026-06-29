@@ -1,92 +1,103 @@
 import 'package:flutter/material.dart';
-import '../API/Number_Fact.dart';
-import '../Design/FrostedGlass.dart';
+import '../API/number_fact.dart';
+import '../presentation/widgets/widgets.dart';
+
 class BalanceOverview extends StatefulWidget {
   final int number;
+
   const BalanceOverview({super.key, required this.number});
+
   @override
-  _BalanceOverviewState createState() => _BalanceOverviewState();
+  State<BalanceOverview> createState() => _BalanceOverviewState();
 }
 
 class _BalanceOverviewState extends State<BalanceOverview> {
-  String fact = 'Loading';
-  String? balanceO;
+  String fact = 'Loading…';
+  late String balanceO;
+
   @override
   void initState() {
     super.initState();
     balanceO = widget.number.toString();
-    fetchNumberFact('trivia', widget.number.toString()).then((value) {
-      setState(() {
-        fact = value;
-      });
-    });
+    _loadFact();
+  }
+
+  Future<void> _loadFact() async {
+    final value = await fetchNumberFact('trivia', widget.number.toString());
+    if (mounted) {
+      setState(() => fact = value);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.navigate_before_rounded),
-          iconSize: 30,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         title: const Text('Balance Overview'),
+        centerTitle: true,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/Balance_Overview_Background.jpg'),
-            fit: BoxFit.cover,
+      body: ListView(
+        padding: const EdgeInsets.all(StitchSpacing.md),
+        children: [
+          StitchAppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Balance Left',
+                  style: context.textTheme.labelLarge?.copyWith(
+                    color: context.colors.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: StitchSpacing.sm),
+                Text(
+                  CurrencyFormatter.format(
+                    double.tryParse(balanceO) ?? widget.number.toDouble(),
+                  ),
+                  style: CurrencyFormatter.amountStyle(
+                    context.textTheme.displayMedium,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        alignment: Alignment.topCenter,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: FrostedGlassBox(
-                theWidth: 330.0,
-                theHeight: 50.0,
-                theChild: Text(
-                  'Balance Left : $balanceO',
-                  style: const TextStyle(color: Colors.white70, fontSize: 20.0),
-                  textAlign: TextAlign.center,
+          const SizedBox(height: StitchSpacing.md),
+          StitchAppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.lightbulb_outline_rounded,
+                      color: context.colors.tertiary,
+                    ),
+                    const SizedBox(width: StitchSpacing.sm),
+                    Text(
+                      'Number Trivia',
+                      style: context.textTheme.titleMedium,
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: FrostedGlassBox(
-                theWidth: 330.0,
-                theHeight: 100.0,
-                theChild: Text(
+                const SizedBox(height: StitchSpacing.md),
+                Text(
                   fact,
-                  style: const TextStyle(color: Colors.white70, fontSize: 20.0),
-                  textAlign: TextAlign.center,
+                  style: context.textTheme.bodyLarge?.copyWith(
+                    color: context.colors.onSurfaceVariant,
+                  ),
                 ),
-              ),
+              ],
             ),
-            // Add more FrostedGlassBox widgets as needed
-          ],
-        ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        focusColor: Colors.white54,
-        onPressed: () {fetchNumberFact('trivia', widget.number.toString()).then((value) {
-          setState(() {
-            fact = value;
-          });
-        });
-        },
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 3, color: Colors.white54),
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: const Icon(Icons.refresh),
+      floatingActionButton: StitchFab(
+        onPressed: _loadFact,
+        icon: Icons.refresh_rounded,
+        tooltip: 'Refresh trivia',
+        heroTag: 'balance_overview_refresh',
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

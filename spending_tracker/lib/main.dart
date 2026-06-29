@@ -10,9 +10,12 @@
 
 import 'package:flutter/material.dart';
 import 'Data/Expense_data.dart';
+import 'Data/hive_database.dart';
 import 'Screens/tabs_manager.dart';
+import 'core/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'utils.dart';
 
 /// Main entry point for the application
 ///
@@ -33,6 +36,9 @@ void main() async {
 
   // Open the main database box for storing expenses
   await Hive.openBox("expense_database");
+
+  // Populate sample data on first launch only
+  await HiveDataBase().seedIfFirstLaunch();
 
   // Run the app
   runApp(const MyApp());
@@ -74,22 +80,35 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       /// Create and provide ExpenseData instance to entire widget tree
       create: (context) => ExpenseData(),
-      builder: (context, child) => MaterialApp(
-        /// App title shown in system UI
-        title: 'Spendz - Expense Tracker',
+      child: StitchThemedApp(
+        themeMode: ThemeMode.system,
+        builder: (context, lightTheme, darkTheme) {
+          return MaterialApp(
+            /// App title shown in system UI
+            title: 'Spendz - Expense Tracker',
 
-        /// Home screen - TabsManager handles navigation and auth
-        home: const TabsManager(),
+            /// Stitch design system themes with Material You dynamic color
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: ThemeMode.system,
 
-        /// Hide debug banner in top right corner
-        debugShowCheckedModeBanner: false,
+            /// Cross-platform scroll behavior (touch + mouse)
+            scrollBehavior: MyCustomScrollBehavior(),
 
-        /// Configure light theme
-        /// Dark theme can be enabled by uncommenting darkTheme
-        theme: ThemeData().copyWith(),
+            /// Sync status bar / nav bar with active theme
+            builder: (context, child) {
+              return StitchSystemUi(
+                child: child ?? const SizedBox.shrink(),
+              );
+            },
 
-        // Optional: Uncomment to add dark theme support
-        // darkTheme: ThemeData.dark().copyWith(useMaterial3: true),
+            /// Home screen - TabsManager handles navigation and auth
+            home: const TabsManager(),
+
+            /// Hide debug banner in top right corner
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
   }

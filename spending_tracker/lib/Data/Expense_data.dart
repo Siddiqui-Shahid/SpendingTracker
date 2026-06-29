@@ -37,6 +37,10 @@ class ExpenseData extends ChangeNotifier {
   /// Instance of Hive database for persistent storage
   final db = HiveDataBase();
 
+  ExpenseData() {
+    prepareData();
+  }
+
   /// List of all transactions (expenses and income)
   ///
   /// Format: [ExpenseItem]
@@ -77,12 +81,52 @@ class ExpenseData extends ChangeNotifier {
   /// );
   /// expenseData.updateExpense(0, updatedExpense);
   /// ```
+  bool _itemsMatch(ExpenseItem a, ExpenseItem b) {
+    return a.name == b.name &&
+        a.amount == b.amount &&
+        a.type == b.type &&
+        a.dateTime.millisecondsSinceEpoch == b.dateTime.millisecondsSinceEpoch;
+  }
+
+  /// Finds a transaction index by reference, falling back to field matching.
+  int findExpenseIndex(ExpenseItem item) {
+    final byRef = overallExpenseList.indexOf(item);
+    if (byRef != -1) return byRef;
+
+    for (var i = 0; i < overallExpenseList.length; i++) {
+      if (_itemsMatch(overallExpenseList[i], item)) return i;
+    }
+    return -1;
+  }
+
+  void _recalculateAndSaveBalance() {
+    var balance = 0.0;
+    for (final item in overallExpenseList) {
+      final amt = double.tryParse(item.amount) ?? 0.0;
+      if (item.type == 'expense') {
+        balance -= amt;
+      } else {
+        balance += amt;
+      }
+    }
+    db.saveBalance(balance);
+    notifyListeners();
+  }
+
   void updateExpense(int index, ExpenseItem updatedExpense) {
     if (index >= 0 && index < overallExpenseList.length) {
       overallExpenseList[index] = updatedExpense;
       db.saveData(overallExpenseList);
-      notifyListeners();
+      _recalculateAndSaveBalance();
     }
+  }
+
+  /// Updates a transaction by locating the original item in memory or storage.
+  bool updateExpenseItem(ExpenseItem original, ExpenseItem updated) {
+    final index = findExpenseIndex(original);
+    if (index < 0) return false;
+    updateExpense(index, updated);
+    return true;
   }
 
   /// Completely erases all data including expenses, balance, and settings
@@ -296,8 +340,8 @@ class ExpenseData extends ChangeNotifier {
   /// ```
   void addExpense(ExpenseItem newExpense) {
     overallExpenseList.add(newExpense);
-    notifyListeners();
     db.saveData(overallExpenseList);
+    _recalculateAndSaveBalance();
   }
 
   /// Adds a new income transaction
@@ -323,8 +367,8 @@ class ExpenseData extends ChangeNotifier {
   /// ```
   void addIncome(ExpenseItem newIncome) {
     overallExpenseList.add(newIncome);
-    notifyListeners();
     db.saveData(overallExpenseList);
+    _recalculateAndSaveBalance();
   }
 
   /// Deletes a transaction and recalculates balance
@@ -347,21 +391,12 @@ class ExpenseData extends ChangeNotifier {
   /// expenseData.deleteExpense(transaction);
   /// ```
   void deleteExpense(ExpenseItem expense) {
-    // Remove the expense
-    overallExpenseList.remove(expense);
-    // Recalculate balance
-    double balance = 0.0;
-    for (var item in overallExpenseList) {
-      double amt = double.tryParse(item.amount) ?? 0.0;
-      if (item.type == 'expense') {
-        balance -= amt;
-      } else {
-        balance += amt;
-      }
+    final index = findExpenseIndex(expense);
+    if (index >= 0) {
+      overallExpenseList.removeAt(index);
     }
     db.saveData(overallExpenseList);
-    db.saveBalance(balance);
-    notifyListeners();
+    _recalculateAndSaveBalance();
   }
 
   /// Adds or updates a general app setting

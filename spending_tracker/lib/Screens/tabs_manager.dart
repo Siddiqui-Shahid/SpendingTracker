@@ -2,26 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import '../Data/Expense_data.dart';
-import 'Home_Screen.dart';
-import 'Login_Page.dart';
+import '../core/constants/app_strings.dart';
+import '../presentation/widgets/widgets.dart';
+import 'Analysis_Screen.dart';
+import 'Balance_Overview.dart';
+import 'Settings.dart';
 import 'addTransactionPage.dart';
+import 'dashboard_screen.dart';
+import 'transaction_history_screen.dart';
 
 class TabsManager extends StatefulWidget {
   const TabsManager({super.key});
+
   @override
   State<TabsManager> createState() => _TabsManager();
 }
 
-Route _createRoute() {
-  return PageRouteBuilder(
+Route<void> _createAddTransactionRoute() {
+  return PageRouteBuilder<void>(
     pageBuilder: (context, animation, secondaryAnimation) =>
-        AddTransactionPage(),
+        const AddTransactionPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.5);
       const end = Offset.zero;
-      const curve = Curves.ease;
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
+      const curve = Curves.easeOutCubic;
+      final tween = Tween(begin: begin, end: end).chain(
+        CurveTween(curve: curve),
+      );
       return SlideTransition(position: animation.drive(tween), child: child);
     },
   );
@@ -29,63 +36,64 @@ Route _createRoute() {
 
 class _TabsManager extends State<TabsManager> {
   bool _locked = false;
+  bool _unlocked = false;
+  bool _authInProgress = false;
   int _attempts = 0;
   final int _maxAttempts = 3;
-  final LocalAuthentication auth = LocalAuthentication();
-  int currentPageIndex = 0;
-  var _selectedIndex = 0;
-  final List<Widget> _screens = [const HomeScreen(), const LoginScreen()];
+  final LocalAuthentication _auth = LocalAuthentication();
+  int _selectedIndex = 0;
   bool _didAuthCheck = false;
+
+  bool _isBiometricEnabled() {
+    return Provider.of<ExpenseData>(
+      context,
+      listen: false,
+    ).getFingerprintEnabled();
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_didAuthCheck) {
       _didAuthCheck = true;
-      Future.delayed(Duration.zero, _checkFingerprint);
+      if (_isBiometricEnabled()) {
+        Future<void>.delayed(Duration.zero, _checkFingerprint);
+      } else {
+        _unlocked = true;
+      }
     }
   }
 
   Future<void> _checkFingerprint() async {
-    final enabled = Provider.of<ExpenseData>(
-      context,
-      listen: false,
-    ).getFingerprintEnabled();
-    debugPrint('Fingerprint setting enabled: $enabled');
-    if (!enabled) return;
-    final canCheckBiometrics = await auth.canCheckBiometrics;
-    final isDeviceSupported = await auth.isDeviceSupported();
-    debugPrint(
-      'Can check biometrics: $canCheckBiometrics, Device supported: $isDeviceSupported',
-    );
-    // Update: Remove 'options' parameter or update to match latest local_auth API if needed.
+    if (_authInProgress || _unlocked || _locked) return;
+
+    setState(() => _authInProgress = true);
+
+    final canCheckBiometrics = await _auth.canCheckBiometrics;
+    final isDeviceSupported = await _auth.isDeviceSupported();
+
     if (!canCheckBiometrics || !isDeviceSupported) {
-      // Show fallback dialog
       if (mounted) {
-        showDialog(
+        setState(() {
+          _authInProgress = false;
+          _unlocked = true;
+        });
+        await StitchConfirmationDialog.show(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Biometrics not available'),
-            content: const Text(
-              'No biometrics enrolled or device not supported.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
+          title: 'Biometrics not available',
+          message:
+              'No biometrics enrolled or device not supported. Unlocking without biometric.',
+          icon: Icons.fingerprint_rounded,
         );
       }
       return;
     }
-    bool authenticated = false;
-    while (_attempts < _maxAttempts && !authenticated) {
+
+    var authenticated = false;
+    while (_attempts < _maxAttempts && !authenticated && mounted) {
       try {
-        authenticated = await auth.authenticate(
-          localizedReason: 'Authenticate to access the app',
-          // options removed for latest local_auth API compatibility
+        authenticated = await _auth.authenticate(
+          localizedReason: 'Authenticate to unlock ${AppStrings.appName}',
         );
       } catch (e) {
         debugPrint('Biometric error: $e');
@@ -93,49 +101,157 @@ class _TabsManager extends State<TabsManager> {
       }
       if (!authenticated) {
         _attempts++;
-        debugPrint('Fingerprint attempt $_attempts failed');
       }
     }
-    if (!authenticated) {
+
+    if (!mounted) return;
+
+    if (authenticated) {
+      setState(() {
+        _unlocked = true;
+        _authInProgress = false;
+        _attempts = 0;
+      });
+    } else {
       setState(() {
         _locked = true;
+        _authInProgress = false;
       });
     }
   }
 
-  void _onTappedItem(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  void _openAddTransaction() {
+    Navigator.of(context).push(_createAddTransactionRoute());
+  }
+
+  void _openBalanceOverview(double balance) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BalanceOverview(number: balance.round()),
+      ),
+    );
+  }
+
+  Widget _buildLockScreen() {
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: StitchSpacing.xl),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.fingerprint_rounded,
+                  size: 96,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(height: StitchSpacing.lg),
+                Text(
+                  AppStrings.lockTitle,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: StitchSpacing.sm),
+                Text(
+                  _authInProgress
+                      ? AppStrings.lockVerifying
+                      : AppStrings.lockSubtitle,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: StitchSpacing.xl),
+                if (!_authInProgress)
+                  StitchPrimaryButton(
+                    label: AppStrings.unlockButton,
+                    icon: Icons.fingerprint_rounded,
+                    onPressed: _checkFingerprint,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: StitchSpacing.xl,
+                      vertical: StitchSpacing.md,
+                    ),
+                  ),
+                if (_authInProgress)
+                  const StitchLoadingIndicator(
+                    message: AppStrings.lockVerifying,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainShell() {
+    return Consumer<ExpenseData>(
+      builder: (context, expenseData, _) {
+        final balance = expenseData.getBalance();
+
+        return StitchNavigationShell(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (index) {
+            setState(() => _selectedIndex = index);
+          },
+          destinations: [
+            StitchNavDestination(
+              label: 'Home',
+              icon: Icons.home_outlined,
+              selectedIcon: Icons.home_rounded,
+              body: DashboardScreen(
+                onViewAll: () => setState(() => _selectedIndex = 1),
+                onBalanceLongPress: () => _openBalanceOverview(balance),
+                onAddTransaction: _openAddTransaction,
+              ),
+            ),
+            const StitchNavDestination(
+              label: 'History',
+              icon: Icons.receipt_long_outlined,
+              selectedIcon: Icons.receipt_long_rounded,
+              body: TransactionHistoryScreen(),
+            ),
+            const StitchNavDestination(
+              label: 'Insights',
+              icon: Icons.bar_chart_outlined,
+              selectedIcon: Icons.bar_chart_rounded,
+              body: AnalysisScreen(),
+            ),
+            StitchNavDestination(
+              label: AppStrings.settings,
+              icon: Icons.settings_outlined,
+              selectedIcon: Icons.settings_rounded,
+              body: Settings(asTab: true),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     if (_locked) {
       return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.lock, size: 80, color: Colors.red),
-              const SizedBox(height: 20),
-              const Text(
-                'App locked due to failed fingerprint attempts.',
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Exit'),
-              ),
-            ],
-          ),
+        body: StitchErrorState(
+          title: 'App locked',
+          message: 'App locked due to failed fingerprint attempts.',
+          icon: Icons.lock_outline_rounded,
+          onRetry: () {
+            setState(() {
+              _locked = false;
+              _attempts = 0;
+            });
+            _checkFingerprint();
+          },
         ),
       );
     }
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(body: _screens[_selectedIndex]),
-    );
+
+    if (_isBiometricEnabled() && !_unlocked) {
+      return _buildLockScreen();
+    }
+
+    return _buildMainShell();
   }
 }

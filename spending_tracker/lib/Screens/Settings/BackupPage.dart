@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:provider/provider.dart';
+import '../../presentation/widgets/widgets.dart';
 
 class BackupPage extends StatefulWidget {
   const BackupPage({super.key});
@@ -29,36 +30,34 @@ class _BackupPageState extends State<BackupPage> {
         centerTitle: true,
       ),
       body: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(StitchSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Data Management',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            const StitchSectionHeader(
+              title: 'Data Management',
+              padding: EdgeInsets.zero,
             ),
-            const SizedBox(height: 16),
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.backup, color: Colors.blue),
-                title: const Text('Backup Data'),
-                subtitle: const Text('Export your data to a backup file'),
+            const SizedBox(height: StitchSpacing.md),
+            StitchAppCard(
+              padding: EdgeInsets.zero,
+              child: StitchListTile(
+                leadingIcon: Icons.backup,
+                title: 'Backup Data',
+                subtitle: 'Export your data to a backup file',
                 trailing: const Icon(Icons.keyboard_arrow_right),
-                onTap: () {
-                  _showBackupDialog(context);
-                },
+                onTap: () => _showBackupDialog(context),
               ),
             ),
-            const SizedBox(height: 8),
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.restore, color: Colors.green),
-                title: const Text('Restore Data'),
-                subtitle: const Text('Import data from a backup file'),
+            const SizedBox(height: StitchSpacing.sm),
+            StitchAppCard(
+              padding: EdgeInsets.zero,
+              child: StitchListTile(
+                leadingIcon: Icons.restore,
+                title: 'Restore Data',
+                subtitle: 'Import data from a backup file',
                 trailing: const Icon(Icons.keyboard_arrow_right),
-                onTap: () {
-                  _showRestoreDialog(context);
-                },
+                onTap: () => _showRestoreDialog(context),
               ),
             ),
           ],
@@ -68,70 +67,42 @@ class _BackupPageState extends State<BackupPage> {
   }
 
   void _showBackupDialog(BuildContext context) {
-    showDialog(
+    StitchConfirmationDialog.show(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Backup Data'),
-        content: const Text(
+      title: 'Backup Data',
+      message:
           'This will export your data to a backup file. You can restore your data on any device.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              Future.delayed(const Duration(milliseconds: 200), () {
-                if (mounted) _performBackup(context);
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Create Backup'),
-          ),
-        ],
-      ),
+      icon: Icons.backup_rounded,
+      secondaryLabel: 'Cancel',
+      primaryLabel: 'Create Backup',
+      onPrimary: () {
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted) _performBackup(context);
+        });
+      },
     );
   }
 
   void _showRestoreDialog(BuildContext context) {
-    showDialog(
+    StitchConfirmationDialog.show(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Restore Data'),
-        content: const Text(
-          'This will replace all your current data with the data from the backup file. This action cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              Future.delayed(const Duration(milliseconds: 200), () {
-                if (mounted) restoreBackup(context);
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Select Backup File'),
-          ),
-        ],
-      ),
+      title: 'Restore Data',
+      message:
+          'This will replace all your current data with the data from the backup file. This cannot be undone.',
+      icon: Icons.restore_rounded,
+      destructive: true,
+      secondaryLabel: 'Cancel',
+      primaryLabel: 'Select Backup File',
+      onPrimary: () {
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted) restoreBackup(context);
+        });
+      },
     );
   }
 
   Future<void> _performBackup(BuildContext context) async {
     final hive = HiveDataBase();
-    final expenseProvider = Provider.of<ExpenseData>(context, listen: false);
     final List<ExpenseItem> expenses = hive.readData();
     final List<Map<String, dynamic>> expensesJson = expenses
         .map(
@@ -170,22 +141,11 @@ class _BackupPageState extends State<BackupPage> {
       return;
     }
     // Write the bytes to the selected file path
-    final file = await File(savePath).writeAsBytes(bytes);
+    await File(savePath).writeAsBytes(bytes);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle, color: Colors.white),
-            const SizedBox(width: 8),
-            Expanded(child: Text('Backup created at:\n$savePath')),
-          ],
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
+        content: Text('Backup created at:\n$savePath'),
         duration: const Duration(seconds: 6),
       ),
     );
