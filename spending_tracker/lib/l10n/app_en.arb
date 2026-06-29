@@ -1,0 +1,21 @@
+{
+  "@@locale": "en",
+  "appTitle": "ZenSpend",
+  "@appTitle": {
+    "description": "Application display name"
+  },
+  "settings": "Settings",
+  "about": "About",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+  "contactSupport": "Contact support",
+  "updateRequired": "Update required",
+  "updateAvailable": "Update available",
+  "updateLater": "Later",
+  "updateNow": "Update",
+  "onboardingWelcomeTitle": "Welcome to ZenSpend",
+  "onboardingWelcomeBody": "Track income and expenses in one place. Simple, fast, and private.",
+  "onboardingBiometricTitle": "Protect with biometrics",
+  "onboardingBiometricBody": "Lock ZenSpend with fingerprint or face recognition so only you can open your finances.",
+  "getStarted": "Get started"
+}

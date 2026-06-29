@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>New Spendz</string>
+	<string>ZenSpend</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,6 +26,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>ZenSpend uses Face ID to protect your financial data when unlocking the app.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>This app needs access to your files to save and restore backups.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

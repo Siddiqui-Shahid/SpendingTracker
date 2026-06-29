@@ -1,111 +1,72 @@
-/// Application entry point for Spending Tracker (Spendz)
+/// Application entry point for SpendZ
 ///
-/// This file initializes the Flutter application with:
-/// - Hive local database setup
-/// - Provider state management configuration
-/// - Material Design theme configuration
-///
-/// The app implements a modern expense tracking system with biometric
-/// authentication and local data persistence.
+/// Initializes Hive, Firebase (Crashlytics + Remote Config), and Provider.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'Data/Expense_data.dart';
-import 'Data/hive_database.dart';
-import 'Screens/tabs_manager.dart';
-import 'core/theme/theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:new_spendz/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+import 'Data/Expense_data.dart';
+import 'Screens/app_root.dart';
+import 'core/config/app_config.dart';
+import 'core/services/firebase_service.dart';
+import 'core/services/onboarding_service.dart';
+import 'core/theme/theme.dart';
 import 'utils.dart';
 
-/// Main entry point for the application
-///
-/// Initializes Hive local database before running the app.
-/// Hive is used for persistent local storage of expenses and app settings.
-///
-/// Usage:
-/// ```dart
-/// void main() async {
-///   await Hive.initFlutter();
-///   await Hive.openBox("expense_database");
-///   runApp(const MyApp());
-/// }
-/// ```
-void main() async {
-  // Initialize Hive for Flutter
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
+  await Hive.openBox('expense_database');
+  await OnboardingService.ensureInitialized();
 
-  // Open the main database box for storing expenses
-  await Hive.openBox("expense_database");
+  try {
+    await FirebaseService.initialize();
+  } catch (e, stack) {
+    if (kDebugMode) {
+      debugPrint('Firebase initialization skipped or failed: $e');
+    }
+    // App remains usable offline if Firebase fails on first launch.
+    debugPrintStack(stackTrace: stack);
+  }
 
-  // Populate sample data on first launch only
-  await HiveDataBase().seedIfFirstLaunch();
-
-  // Run the app
   runApp(const MyApp());
 }
 
-/// Root widget of the application
-///
-/// [MyApp] is the main application widget that:
-/// - Provides [ExpenseData] state via Provider pattern
-/// - Configures Material Design theme
-/// - Sets up the home screen as [TabsManager]
-/// - Disables debug banner for clean UI
-///
-/// State Management:
-/// - Uses Provider package with ChangeNotifier pattern
-/// - [ExpenseData] manages all expense-related state
-/// - Real-time updates to all listening widgets
-///
-/// Theme:
-/// - Material Design 3 compatible
-/// - Light theme configured (dark theme available)
-///
-/// Example:
-/// ```dart
-/// return ChangeNotifierProvider(
-///   create: (context) => ExpenseData(),
-///   builder: (context, child) => MaterialApp(
-///     title: 'Spendz',
-///     home: const TabsManager(),
-///   ),
-/// );
-/// ```
 class MyApp extends StatelessWidget {
-  /// Creates a [MyApp] widget
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      /// Create and provide ExpenseData instance to entire widget tree
       create: (context) => ExpenseData(),
       child: StitchThemedApp(
         themeMode: ThemeMode.system,
         builder: (context, lightTheme, darkTheme) {
           return MaterialApp(
-            /// App title shown in system UI
-            title: 'Spendz - Expense Tracker',
-
-            /// Stitch design system themes with Material You dynamic color
+            title: '${AppConfig.appName} - Expense Tracker',
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: ThemeMode.system,
-
-            /// Cross-platform scroll behavior (touch + mouse)
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('en'),
             scrollBehavior: MyCustomScrollBehavior(),
-
-            /// Sync status bar / nav bar with active theme
             builder: (context, child) {
               return StitchSystemUi(
                 child: child ?? const SizedBox.shrink(),
               );
             },
-
-            /// Home screen - TabsManager handles navigation and auth
-            home: const TabsManager(),
-
-            /// Hide debug banner in top right corner
+            home: const AppRoot(),
             debugShowCheckedModeBanner: false,
           );
         },

@@ -1,24 +1,15 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../Model/Expense_item.dart';
+import '../core/utils/balance_utils.dart';
 import 'seed_data.dart';
 
 class HiveDataBase {
   static const _initialSeedCompleteKey = 'InitialSeedComplete';
 
-  /// Seeds sample data on the very first app launch only.
-  Future<void> seedIfFirstLaunch() async {
-    if (_myBox.get(_initialSeedCompleteKey) == true) {
-      return;
-    }
-
-    final existingExpenses = _myBox.get("All Expenses");
-    if (existingExpenses != null && (existingExpenses as List).isNotEmpty) {
-      await _myBox.put(_initialSeedCompleteKey, true);
-      return;
-    }
-
-    if (_myBox.get("Category") == null) {
-      await _myBox.put("Category", [
+  /// Loads demo transactions (used from onboarding only).
+  Future<void> seedDemoData({int monthCount = 3}) async {
+    if (_myBox.get('Category') == null) {
+      await _myBox.put('Category', [
         '🎓 Education',
         '🍔 Food',
         '✈️ Travel',
@@ -34,7 +25,7 @@ class HiveDataBase {
 
     final sampleTransactions = generateSampleTransactions(
       endDate: DateTime.now(),
-      monthCount: 10,
+      monthCount: monthCount,
     );
     saveData(sampleTransactions);
     saveBalance(calculateBalance(sampleTransactions));

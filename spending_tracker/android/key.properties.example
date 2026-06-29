@@ -1,0 +1,6 @@
+# Copy to key.properties and fill in before release builds.
+# Never commit key.properties or your .jks file to git.
+storePassword=your-store-password
+keyPassword=your-key-password
+keyAlias=upload
+storeFile=/absolute/path/to/upload-keystore.jks

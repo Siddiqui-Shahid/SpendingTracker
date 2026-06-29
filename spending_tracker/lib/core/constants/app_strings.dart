@@ -1,7 +1,7 @@
 /// Centralized branding and copy for the SpendZ / ZenSpend app.
 abstract final class AppStrings {
   /// Display name shown in app bars, lock screen, etc.
-  static const String appName = 'SpendZ';
+  static const String appName = 'ZenSpend';
 
   /// Alternate Stitch project brand name.
   static const String stitchBrandName = 'ZenSpend';

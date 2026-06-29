@@ -5,6 +5,7 @@ export '../../core/constants/app_strings.dart';
 export '../../core/theme/theme.dart';
 export '../../core/utils/category_utils.dart';
 export '../../core/utils/currency_formatter.dart';
+export 'app_update_dialog.dart';
 export 'stitch_amount_display.dart';
 export 'stitch_app_card.dart';
 export 'stitch_budget_card.dart';

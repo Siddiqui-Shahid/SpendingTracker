@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "527512569903",
+    "project_id": "zenspend-af9c2",
+    "storage_bucket": "zenspend-af9c2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527512569903:android:9a472a25021c65333fdeda",
+        "android_client_info": {
+          "package_name": "com.zenspend.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgH7Ithu5ZDQ_Ii-O7D58FaOYwWbDX_Pg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -114,16 +114,3 @@ List<ExpenseItem> generateSampleTransactions({
   transactions.sort((a, b) => a.dateTime.compareTo(b.dateTime));
   return transactions;
 }
-
-double calculateBalance(List<ExpenseItem> items) {
-  var balance = 0.0;
-  for (final item in items) {
-    final amount = double.tryParse(item.amount) ?? 0.0;
-    if (item.type == 'expense') {
-      balance -= amount;
-    } else {
-      balance += amount;
-    }
-  }
-  return balance;
-}

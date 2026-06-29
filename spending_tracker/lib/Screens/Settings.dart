@@ -4,8 +4,10 @@ import 'package:new_spendz/Data/Expense_data.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Settings/Categories.dart';
 import 'Settings/BackupPage.dart';
+import 'Settings/AboutPage.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_icons/simple_icons.dart';
+import '../core/config/app_config.dart';
 import '../presentation/widgets/widgets.dart';
 
 class Settings extends StatelessWidget {
@@ -173,6 +175,25 @@ class Settings extends StatelessWidget {
                         title: 'Erase all Data',
                         destructive: true,
                         onTap: () => showAlertDialog(context),
+                      ),
+                      const StitchSectionHeader(
+                        title: 'About',
+                        compact: true,
+                        padding: EdgeInsets.zero,
+                      ),
+                      StitchListTile(
+                        leadingIcon: Icons.info_outline_rounded,
+                        title: 'About ${AppConfig.appName}',
+                        subtitle: 'Version, support & legal',
+                        trailing: const Icon(Icons.keyboard_arrow_right),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AboutPage(),
+                            ),
+                          );
+                        },
                       ),
                       const StitchSectionHeader(
                         title: 'Social',

@@ -1,36 +1,29 @@
 import 'package:flutter/material.dart';
-import '../API/number_fact.dart';
+import '../core/utils/currency_formatter.dart';
 import '../presentation/widgets/widgets.dart';
 
-class BalanceOverview extends StatefulWidget {
+class BalanceOverview extends StatelessWidget {
   final int number;
 
   const BalanceOverview({super.key, required this.number});
 
-  @override
-  State<BalanceOverview> createState() => _BalanceOverviewState();
-}
-
-class _BalanceOverviewState extends State<BalanceOverview> {
-  String fact = 'Loading…';
-  late String balanceO;
-
-  @override
-  void initState() {
-    super.initState();
-    balanceO = widget.number.toString();
-    _loadFact();
-  }
-
-  Future<void> _loadFact() async {
-    final value = await fetchNumberFact('trivia', widget.number.toString());
-    if (mounted) {
-      setState(() => fact = value);
+  String _balanceInsight(double balance) {
+    if (balance < 0) {
+      return 'Your balance is negative. Review recent expenses and consider adjusting spending.';
     }
+    if (balance < 1000) {
+      return 'Keep logging small purchases — they add up quickly over the month.';
+    }
+    if (balance < 10000) {
+      return 'You are building a healthy buffer. Set a monthly budget to stay on track.';
+    }
+    return 'Strong balance. Consider allocating a portion to savings or investments.';
   }
 
   @override
   Widget build(BuildContext context) {
+    final balance = number.toDouble();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Balance Overview'),
@@ -50,12 +43,14 @@ class _BalanceOverviewState extends State<BalanceOverview> {
                   ),
                 ),
                 const SizedBox(height: StitchSpacing.sm),
-                Text(
-                  CurrencyFormatter.format(
-                    double.tryParse(balanceO) ?? widget.number.toDouble(),
-                  ),
-                  style: CurrencyFormatter.amountStyle(
-                    context.textTheme.displayMedium,
+                Semantics(
+                  label: 'Current balance',
+                  value: CurrencyFormatter.format(balance),
+                  child: Text(
+                    CurrencyFormatter.format(balance),
+                    style: CurrencyFormatter.amountStyle(
+                      context.textTheme.displayMedium,
+                    ),
                   ),
                 ),
               ],
@@ -74,14 +69,14 @@ class _BalanceOverviewState extends State<BalanceOverview> {
                     ),
                     const SizedBox(width: StitchSpacing.sm),
                     Text(
-                      'Number Trivia',
+                      'Insight',
                       style: context.textTheme.titleMedium,
                     ),
                   ],
                 ),
                 const SizedBox(height: StitchSpacing.md),
                 Text(
-                  fact,
+                  _balanceInsight(balance),
                   style: context.textTheme.bodyLarge?.copyWith(
                     color: context.colors.onSurfaceVariant,
                   ),
@@ -91,13 +86,6 @@ class _BalanceOverviewState extends State<BalanceOverview> {
           ),
         ],
       ),
-      floatingActionButton: StitchFab(
-        onPressed: _loadFact,
-        icon: Icons.refresh_rounded,
-        tooltip: 'Refresh trivia',
-        heroTag: 'balance_overview_refresh',
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

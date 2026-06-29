@@ -1,5 +1,5 @@
 name: new_spendz
-description: "A new Flutter project."
+description: "SpendZ — private expense tracker with biometric security."
 # Repository information
 homepage: https://github.com/Siddiqui-Shahid/SpendingTracker
 repository: https://github.com/Siddiqui-Shahid/SpendingTracker
@@ -46,11 +46,17 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   google_fonts: ^8.1.0
-  http: ^1.6.0
   simple_icons: ^14.6.1
   url_launcher: ^6.1.11
   fl_chart: ^1.2.0
   dynamic_color: ^1.8.1
+  firebase_core: ^3.13.0
+  firebase_crashlytics: ^4.3.5
+  firebase_remote_config: ^5.4.3
+  package_info_plus: ^8.3.0
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +76,7 @@ flutter_launcher_icons:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

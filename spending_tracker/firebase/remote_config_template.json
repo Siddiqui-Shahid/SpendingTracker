@@ -1,0 +1,96 @@
+{
+  "parameters": {
+    "min_version_android": {
+      "defaultValue": {
+        "value": "1.0.0"
+      },
+      "description": "Force update below this version (Android).",
+      "valueType": "STRING"
+    },
+    "min_version_ios": {
+      "defaultValue": {
+        "value": "1.0.0"
+      },
+      "description": "Force update below this version (iOS).",
+      "valueType": "STRING"
+    },
+    "latest_version": {
+      "defaultValue": {
+        "value": "1.0.0"
+      },
+      "description": "Latest published app version.",
+      "valueType": "STRING"
+    },
+    "force_update": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "When true, users below latest_version must update.",
+      "valueType": "BOOLEAN"
+    },
+    "update_message": {
+      "defaultValue": {
+        "value": "A new version of ZenSpend is available. Please update for the best experience."
+      },
+      "description": "Message shown in the update dialog.",
+      "valueType": "STRING"
+    },
+    "play_store_url": {
+      "defaultValue": {
+        "value": "https://play.google.com/store/apps/details?id=com.zenspend.app"
+      },
+      "description": "Google Play listing URL.",
+      "valueType": "STRING"
+    },
+    "app_store_url": {
+      "defaultValue": {
+        "value": "https://apps.apple.com/app/id0000000000"
+      },
+      "description": "Apple App Store listing URL.",
+      "valueType": "STRING"
+    },
+    "support_email": {
+      "defaultValue": {
+        "value": "hello@cyfur.in"
+      },
+      "description": "Support email shown in About.",
+      "valueType": "STRING"
+    },
+    "privacy_policy_updated": {
+      "defaultValue": {
+        "value": "June 29, 2026"
+      },
+      "description": "Privacy Policy last updated label.",
+      "valueType": "STRING"
+    },
+    "terms_of_service_updated": {
+      "defaultValue": {
+        "value": "June 29, 2026"
+      },
+      "description": "Terms last updated label.",
+      "valueType": "STRING"
+    },
+    "privacy_policy": {
+      "defaultValue": {
+        "value": "ZenSpend Privacy Policy\n\nLast updated: June 29, 2026\nContact: hello@cyfur.in\n\n1. Introduction\n\nZenSpend (\"we\", \"our\", \"us\") is a personal expense tracking application published by Cyfur. This Privacy Policy explains how we handle information when you use the ZenSpend mobile application (\"the App\").\n\n2. Information we collect\n\n2.1 Data stored on your device\nZenSpend stores the following data locally on your device unless you choose to export it:\n• Transaction descriptions, amounts, dates, and types (income or expense)\n• Custom categories and app preferences\n• Biometric unlock preference (enabled or disabled)\n• Backup files you create manually\n\nWe do not upload your transaction data to our servers by default.\n\n2.2 Data sent to third-party services\nTo keep the App reliable and up to date, we use Google Firebase:\n• Crashlytics: anonymous crash reports (device model, OS version, app version, stack traces). Your transaction details are not intentionally included.\n• Remote Config: fetches app settings such as minimum supported version, update messages, and legal document text. No personal financial data is sent.\n\n2.3 Support communications\nIf you email hello@cyfur.in, we receive the information you include in your message (such as your email address and message content) solely to respond to your request.\n\n3. How we use information\n\nWe use collected information to:\n• Provide core app functionality on your device\n• Diagnose and fix crashes\n• Deliver app updates and legal notices\n• Respond to support requests\n\nWe do not sell your personal information.\n\n4. Permissions\n\n• Biometric authentication: to lock the App (optional)\n• Storage / files: to export and restore backup files\n• Internet: for Crashlytics, Remote Config, and support links\n\n5. Data retention and deletion\n\nTransaction data remains on your device until you delete it or uninstall the App. You can erase all data at any time from Settings → Erase all Data. Crash reports are retained by Google Firebase according to Google's policies.\n\n6. Security\n\nWe recommend enabling biometric unlock and keeping your device OS up to date. You are responsible for securing exported backup files.\n\n7. Children's privacy\n\nZenSpend is not directed to children under 13. We do not knowingly collect information from children.\n\n8. International users\n\nYour data is primarily stored on your device. Firebase services may process technical data on servers operated by Google in various regions.\n\n9. Changes to this policy\n\nWe may update this Privacy Policy. Updated text may be delivered through the App via Firebase Remote Config. Continued use after changes constitutes acceptance.\n\n10. Contact\n\nQuestions about this policy: hello@cyfur.in\n"
+      },
+      "description": "Full Privacy Policy text (in-app).",
+      "valueType": "STRING"
+    },
+    "terms_of_service": {
+      "defaultValue": {
+        "value": "ZenSpend Terms of Service\n\nLast updated: June 29, 2026\nContact: hello@cyfur.in\n\n1. Agreement\n\nBy downloading, installing, or using ZenSpend (\"the App\"), you agree to these Terms of Service (\"Terms\"). If you do not agree, do not use the App.\n\n2. Description of service\n\nZenSpend is a personal finance tracking tool that helps you record income and expenses on your device. ZenSpend is not a bank, payment processor, financial advisor, accountant, or tax preparation service.\n\n3. Eligibility\n\nYou must be at least 13 years old (or the minimum age required in your jurisdiction) to use the App.\n\n4. Your account and device\n\nZenSpend does not require a user account. You are responsible for:\n• The accuracy of information you enter\n• Securing your device and any backup files\n• Compliance with applicable laws\n\n5. Acceptable use\n\nYou agree not to:\n• Use the App for unlawful purposes\n• Attempt to reverse engineer or disrupt the App\n• Misuse support channels or submit false reports\n\n6. Financial disclaimer\n\nAll balances, charts, and summaries are based on data you enter. They are for personal reference only and do not constitute financial, investment, legal, or tax advice. Consult qualified professionals for financial decisions.\n\n7. Data and backups\n\nYour data is stored locally on your device. We are not responsible for loss of data due to device failure, theft, uninstallation, or failure to maintain backups. Use Settings → Backup & Restore regularly.\n\n8. Biometric lock\n\nIf you enable biometric unlock, authentication is handled by your device's operating system. We do not store your fingerprint or face data.\n\n9. App updates\n\nWe may release updates that add, modify, or remove features. Some updates may be required to continue using the App, as indicated through in-app update prompts powered by Firebase Remote Config.\n\n10. Third-party services\n\nThe App uses Google Firebase (Crashlytics, Remote Config). Your use of those services is also subject to Google's terms and privacy policies.\n\n11. Disclaimer of warranties\n\nTHE APP IS PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.\n\n12. Limitation of liability\n\nTO THE MAXIMUM EXTENT PERMITTED BY LAW, CYFUR AND ITS AFFILIATES SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF DATA, PROFITS, OR REVENUE, ARISING FROM YOUR USE OF THE APP.\n\n13. Termination\n\nYou may stop using the App at any time by uninstalling it. We may discontinue or modify the App at any time.\n\n14. Governing law\n\nThese Terms are governed by the laws of India, without regard to conflict-of-law principles, except where mandatory local consumer laws apply.\n\n15. Changes to these Terms\n\nWe may update these Terms. Updated text may be delivered through the App via Firebase Remote Config. The \"Last updated\" date will reflect the latest version.\n\n16. Contact\n\nFor questions about these Terms: hello@cyfur.in\n"
+      },
+      "description": "Full Terms of Service text (in-app).",
+      "valueType": "STRING"
+    }
+  },
+  "version": {
+    "versionNumber": "1",
+    "updateTime": "2026-06-29T15:36:49.855912Z",
+    "updateUser": {
+      "email": "hello@cyfur.in"
+    },
+    "description": "ZenSpend initial Remote Config"
+  }
+}
