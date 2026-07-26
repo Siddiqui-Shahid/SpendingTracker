@@ -1,4 +1,4 @@
-# Release Build Guide — SpendZ
+# Release Build Guide — FinTrack
 
 ## Android upload key
 
@@ -43,7 +43,7 @@ Enable **Crashlytics** and **Remote Config** in Firebase Console for project `ze
 
 ## Version bumps
 
-Update `version` in `pubspec.yaml` (e.g. `1.0.1+2`) before each store upload.
+Update `version` in `pubspec.yaml` (e.g. `1.0.1+101`) before each store upload.
 
 ## Host legal pages
 

@@ -1,4 +1,4 @@
-# Store Release Checklist — SpendZ
+# Store Release Checklist — FinTrack
 
 Bundle ID: `com.zenspend.app`  
 Firebase project: `zenspend-af9c2`
@@ -38,9 +38,9 @@ In Firebase Console → Remote Config, set:
 
 | Key | Example | Purpose |
 |-----|---------|---------|
-| `min_version_android` | `1.0.0` | Force update below this version (Android) |
-| `min_version_ios` | `1.0.0` | Force update below this version (iOS) |
-| `latest_version` | `1.1.0` | Optional update prompt |
+| `min_version_android` | `1.0.1` | Force update below this version (Android) |
+| `min_version_ios` | `1.0.1` | Force update below this version (iOS) |
+| `latest_version` | `1.0.1` | Optional update prompt |
 | `force_update` | `false` | When `true`, below `latest_version` is forced |
 | `update_message` | Custom text | Shown in update dialog |
 | `play_store_url` | Play Store link | Android store button |
@@ -68,7 +68,7 @@ See [RELEASE.md](RELEASE.md) in this folder for Android keystore and iOS certifi
 
 ## Accessibility notes
 
-SpendZ includes Semantics on key widgets (amounts, charts, transaction tiles). Before release, verify:
+FinTrack includes Semantics on key widgets (amounts, charts, transaction tiles). Before release, verify:
 
 - All buttons have labels
 - Balance is announced correctly

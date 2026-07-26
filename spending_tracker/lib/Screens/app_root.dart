@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../core/services/app_update_service.dart';
+import '../core/services/ad_service.dart';
 import '../presentation/widgets/app_update_dialog.dart';
 import 'onboarding_screen.dart';
 import 'tabs_manager.dart';
@@ -26,8 +29,6 @@ class _AppRootState extends State<AppRoot> {
   }
 
   Future<void> _init() async {
-    await OnboardingService.ensureInitialized();
-
     // Existing installs before onboarding: skip the wizard.
     if (!OnboardingService.isComplete()) {
       final existing = HiveDataBase().readData();
@@ -43,7 +44,10 @@ class _AppRootState extends State<AppRoot> {
     });
   }
 
-  Future<void> _checkUpdates(BuildContext context) async {
+  Future<void> _onMainShellReady(BuildContext context) async {
+    // Splash ad runs over the main UI — does not block first paint.
+    unawaited(AdService.showSplashAdIfNeeded());
+
     final info = await AppUpdateService.checkForUpdate();
     if (!context.mounted) return;
     await AppUpdateDialog.showIfNeeded(context, info);
@@ -52,24 +56,22 @@ class _AppRootState extends State<AppRoot> {
   @override
   Widget build(BuildContext context) {
     if (!_ready) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const SizedBox.shrink();
     }
 
     if (!_onboardingComplete) {
       return const OnboardingScreen();
     }
 
-    return _UpdateCheckWrapper(
-      onReady: _checkUpdates,
+    return _MainShellGate(
+      onReady: _onMainShellReady,
       child: const TabsManager(),
     );
   }
 }
 
-class _UpdateCheckWrapper extends StatefulWidget {
-  const _UpdateCheckWrapper({
+class _MainShellGate extends StatefulWidget {
+  const _MainShellGate({
     required this.onReady,
     required this.child,
   });
@@ -78,10 +80,10 @@ class _UpdateCheckWrapper extends StatefulWidget {
   final Widget child;
 
   @override
-  State<_UpdateCheckWrapper> createState() => _UpdateCheckWrapperState();
+  State<_MainShellGate> createState() => _MainShellGateState();
 }
 
-class _UpdateCheckWrapperState extends State<_UpdateCheckWrapper> {
+class _MainShellGateState extends State<_MainShellGate> {
   @override
   void initState() {
     super.initState();

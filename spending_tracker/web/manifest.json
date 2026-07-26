@@ -1,11 +1,11 @@
 {
-    "name": "new_spendz",
-    "short_name": "new_spendz",
+    "name": "FinTrack",
+    "short_name": "FinTrack",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "FinTrack — private expense tracker with biometric security.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

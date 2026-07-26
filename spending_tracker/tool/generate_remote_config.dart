@@ -28,7 +28,7 @@ void main() {
       'versionNumber': '1',
       'updateTime': DateTime.now().toUtc().toIso8601String(),
       'updateUser': {'email': 'hello@cyfur.in'},
-      'description': 'ZenSpend initial Remote Config',
+      'description': 'FinTrack Remote Config',
     },
   };
 
@@ -52,6 +52,6 @@ String _description(String key) {
     AppConfig.rcPrivacyPolicyUpdated => 'Privacy Policy last updated label.',
     AppConfig.rcTermsUpdated => 'Terms last updated label.',
     AppConfig.rcSupportEmail => 'Support email shown in About.',
-    _ => 'ZenSpend Remote Config parameter.',
+    _ => 'FinTrack Remote Config parameter.',
   };
 }

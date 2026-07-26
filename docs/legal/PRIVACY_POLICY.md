@@ -1,11 +1,11 @@
-# Privacy Policy — SpendZ
+# Privacy Policy — FinTrack
 
-**Last updated:** June 29, 2026  
+**Last updated:** July 12, 2026  
 **Contact:** hello@cyfur.in
 
 ## Overview
 
-SpendZ ("we", "our", "the app") is a personal expense tracking application. Your privacy is important to us.
+FinTrack ("we", "our", "the app") is a personal expense tracking application. Your privacy is important to us.
 
 ## Data we collect
 
@@ -55,7 +55,7 @@ The app may fetch configuration values (minimum app version, update messages) fr
 
 ## Children's privacy
 
-SpendZ is not directed at children under 13. We do not knowingly collect data from children.
+FinTrack is not directed at children under 13. We do not knowingly collect data from children.
 
 ## Changes
 

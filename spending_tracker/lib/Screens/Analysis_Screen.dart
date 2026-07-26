@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 import '../Data/Expense_data.dart';
 import '../Model/Expense_item.dart';
 import '../Data/hive_database.dart';
+import '../core/constants/app_strings.dart';
+import '../core/services/ad_service.dart';
 import '../core/utils/category_utils.dart';
+import '../presentation/widgets/ad_banner_widget.dart';
 import '../presentation/widgets/widgets.dart';
 
 enum Period { week, month, year }
@@ -229,6 +232,15 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   earnedAmount: totalEarning,
                   netAmount: totalEarning - totalSpending,
                 ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    StitchSpacing.md,
+                    StitchSpacing.md,
+                    StitchSpacing.md,
+                    0,
+                  ),
+                  child: AiSavingsCoachCard(),
+                ),
                 StitchPeriodFilterChips(
                   labels: const ['Week', 'Month', 'Year'],
                   selectedIndex: selectedPeriod.index,
@@ -261,6 +273,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                         ],
                       ],
                     ),
+                  ),
+                ),
+                AdBannerWidget(
+                  adUnitId: AdService.bannerInsightsUnitId,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: StitchSpacing.md,
+                    vertical: StitchSpacing.sm,
                   ),
                 ),
                 Padding(

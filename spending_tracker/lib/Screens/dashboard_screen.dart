@@ -4,7 +4,9 @@ import 'package:visibility_detector/visibility_detector.dart';
 import '../Data/Expense_data.dart';
 import '../Model/Expense_item.dart';
 import '../core/constants/app_strings.dart';
+import '../core/services/ad_service.dart';
 import '../core/utils/category_utils.dart';
+import '../presentation/widgets/ad_banner_widget.dart';
 import '../presentation/widgets/widgets.dart';
 import 'addTransactionPage.dart';
 
@@ -106,6 +108,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     icon: Icons.add_rounded,
                     expand: true,
                     onPressed: widget.onAddTransaction,
+                  ),
+                ),
+                AdBannerWidget(
+                  adUnitId: AdService.bannerDashboardUnitId,
+                  padding: EdgeInsets.only(
+                    top: StitchSpacing.sm,
+                    left: context.stitchSpacing.gutter,
+                    right: context.stitchSpacing.gutter,
                   ),
                 ),
                 const SizedBox(height: StitchSpacing.md),

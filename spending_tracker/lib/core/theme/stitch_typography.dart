@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:new_spendz/utils.dart';
 
-/// Stitch / ZenSpend typography using Inter across all M3 roles.
+/// Stitch / FinTrack typography using Inter across all M3 roles.
 abstract final class StitchTypography {
   static const List<FontFeature> tabularFigures = [
     FontFeature.tabularFigures(),

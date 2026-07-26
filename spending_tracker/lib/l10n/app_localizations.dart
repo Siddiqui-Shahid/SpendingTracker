@@ -97,7 +97,7 @@ abstract class AppLocalizations {
   /// Application display name
   ///
   /// In en, this message translates to:
-  /// **'ZenSpend'**
+  /// **'FinTrack'**
   String get appTitle;
 
   /// No description provided for @settings.
@@ -157,7 +157,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to ZenSpend'**
+  /// **'Welcome to FinTrack'**
   String get onboardingWelcomeTitle;
 
   /// No description provided for @onboardingWelcomeBody.
@@ -175,7 +175,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingBiometricBody.
   ///
   /// In en, this message translates to:
-  /// **'Lock ZenSpend with fingerprint or face recognition so only you can open your finances.'**
+  /// **'Lock FinTrack with fingerprint or face recognition so only you can open your finances.'**
   String get onboardingBiometricBody;
 
   /// No description provided for @getStarted.

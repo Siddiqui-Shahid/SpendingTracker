@@ -1,22 +1,22 @@
 /// Default legal copy bundled with the app when Remote Config is unavailable.
 abstract final class LegalDocuments {
-  static const String privacyPolicyUpdated = 'June 29, 2026';
-  static const String termsUpdated = 'June 29, 2026';
+  static const String privacyPolicyUpdated = 'July 12, 2026';
+  static const String termsUpdated = 'July 12, 2026';
 
   static const String privacyPolicy = '''
-ZenSpend Privacy Policy
+FinTrack Privacy Policy
 
-Last updated: June 29, 2026
+Last updated: July 12, 2026
 Contact: hello@cyfur.in
 
 1. Introduction
 
-ZenSpend ("we", "our", "us") is a personal expense tracking application published by Cyfur. This Privacy Policy explains how we handle information when you use the ZenSpend mobile application ("the App").
+FinTrack ("we", "our", "us") is a personal expense tracking application published by Cyfur. This Privacy Policy explains how we handle information when you use the FinTrack mobile application ("the App").
 
 2. Information we collect
 
 2.1 Data stored on your device
-ZenSpend stores the following data locally on your device unless you choose to export it:
+FinTrack stores the following data locally on your device unless you choose to export it:
 • Transaction descriptions, amounts, dates, and types (income or expense)
 • Custom categories and app preferences
 • Biometric unlock preference (enabled or disabled)
@@ -24,18 +24,22 @@ ZenSpend stores the following data locally on your device unless you choose to e
 
 We do not upload your transaction data to our servers by default.
 
-2.2 Data sent to third-party services
+2.2 On-device AI (optional)
+The AI Savings Coach builds a local index of your spending habits on your device (retrieval-augmented generation). When Apple Intelligence (iOS) or Gemini Nano (Android) is available, advice is generated on-device. If the on-device model is unavailable, FinTrack shows rule-based tips computed from the same local data. Financial details used for coaching are not sent to Cyfur servers or to cloud AI APIs operated by us.
+
+2.3 Data sent to third-party services
 To keep the App reliable and up to date, we use Google Firebase:
 • Crashlytics: anonymous crash reports (device model, OS version, app version, stack traces). Your transaction details are not intentionally included.
 • Remote Config: fetches app settings such as minimum supported version, update messages, and legal document text. No personal financial data is sent.
 
-2.3 Support communications
+2.4 Support communications
 If you email hello@cyfur.in, we receive the information you include in your message (such as your email address and message content) solely to respond to your request.
 
 3. How we use information
 
 We use collected information to:
 • Provide core app functionality on your device
+• Generate private savings tips from local spending context (on-device AI or rules)
 • Diagnose and fix crashes
 • Deliver app updates and legal notices
 • Respond to support requests
@@ -58,7 +62,7 @@ We recommend enabling biometric unlock and keeping your device OS up to date. Yo
 
 7. Children's privacy
 
-ZenSpend is not directed to children under 13. We do not knowingly collect information from children.
+FinTrack is not directed to children under 13. We do not knowingly collect information from children.
 
 8. International users
 
@@ -74,18 +78,18 @@ Questions about this policy: hello@cyfur.in
 ''';
 
   static const String termsOfService = '''
-ZenSpend Terms of Service
+FinTrack Terms of Service
 
-Last updated: June 29, 2026
+Last updated: July 12, 2026
 Contact: hello@cyfur.in
 
 1. Agreement
 
-By downloading, installing, or using ZenSpend ("the App"), you agree to these Terms of Service ("Terms"). If you do not agree, do not use the App.
+By downloading, installing, or using FinTrack ("the App"), you agree to these Terms of Service ("Terms"). If you do not agree, do not use the App.
 
 2. Description of service
 
-ZenSpend is a personal finance tracking tool that helps you record income and expenses on your device. ZenSpend is not a bank, payment processor, financial advisor, accountant, or tax preparation service.
+FinTrack is a personal finance tracking tool that helps you record income and expenses on your device. FinTrack is not a bank, payment processor, financial advisor, accountant, or tax preparation service.
 
 3. Eligibility
 
@@ -93,7 +97,7 @@ You must be at least 13 years old (or the minimum age required in your jurisdict
 
 4. Your account and device
 
-ZenSpend does not require a user account. You are responsible for:
+FinTrack does not require a user account. You are responsible for:
 • The accuracy of information you enter
 • Securing your device and any backup files
 • Compliance with applicable laws
@@ -150,3 +154,4 @@ We may update these Terms. Updated text may be delivered through the App via Fir
 For questions about these Terms: hello@cyfur.in
 ''';
 }
+// debugPrint(privacyPolicy.replaceAll('\n', r'\n'));

@@ -17,7 +17,7 @@ export 'stitch_shapes.dart';
 export 'stitch_spacing.dart';
 export 'stitch_typography.dart';
 
-/// Global Stitch / ZenSpend theme built from the active design system.
+/// Stitch / FinTrack theme built from the active design system.
 abstract final class StitchTheme {
   static const Color seedColor = StitchColors.seed;
 

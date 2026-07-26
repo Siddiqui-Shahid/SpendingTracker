@@ -45,8 +45,13 @@ abstract final class FirebaseService {
       ),
     );
     await _remoteConfig!.setDefaults(AppConfig.remoteConfigDefaults);
+    // Apply bundled defaults immediately; fetch remote values in background.
+    unawaited(_fetchRemoteConfigInBackground());
+  }
+
+  static Future<void> _fetchRemoteConfigInBackground() async {
     try {
-      await _remoteConfig!.fetchAndActivate();
+      await _remoteConfig?.fetchAndActivate();
     } catch (e, stack) {
       if (kDebugMode) {
         debugPrint('Remote Config fetch failed: $e');

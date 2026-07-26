@@ -1,10 +1,10 @@
-/// Centralized branding and copy for the SpendZ / ZenSpend app.
+/// Centralized branding and copy for the FinTrack app.
 abstract final class AppStrings {
   /// Display name shown in app bars, lock screen, etc.
-  static const String appName = 'ZenSpend';
+  static const String appName = 'FinTrack';
 
   /// Alternate Stitch project brand name.
-  static const String stitchBrandName = 'ZenSpend';
+  static const String stitchBrandName = 'FinTrack';
 
   static const String currencySymbol = '₹';
 
@@ -22,4 +22,17 @@ abstract final class AppStrings {
   static const String spendingInsights = 'Spending Insights';
   static const String settings = 'Settings';
   static const String comingSoon = 'Coming Soon';
+
+  static const String aiSavingsCoach = 'AI Savings Coach';
+  static const String aiSavingsCoachSubtitle =
+      'Private offline RAG over your spending habits. Uses Apple Intelligence on iOS and Gemini Nano on Android when available.';
+  static const String aiOfflineBadge = 'Offline';
+  static const String aiCoachQuestionHint =
+      'Ask anything, e.g. Why is Food high?';
+  static const String aiGetPlan = 'Weekly save plan';
+  static const String aiAsk = 'Ask';
+  static const String aiOnDeviceSource = 'On-device AI';
+  static const String aiRulesSource = 'Local habit tips';
+  static const String aiShowContext = 'Show retrieved spending context';
+  static const String aiHideContext = 'Hide spending context';
 }

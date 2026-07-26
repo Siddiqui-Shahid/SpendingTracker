@@ -1,15 +1,15 @@
-# Terms of Service — SpendZ
+# Terms of Service — FinTrack
 
-**Last updated:** June 29, 2026  
+**Last updated:** July 12, 2026  
 **Contact:** hello@cyfur.in
 
 ## 1. Acceptance
 
-By downloading or using SpendZ, you agree to these Terms of Service.
+By downloading or using FinTrack, you agree to these Terms of Service.
 
 ## 2. Description of service
 
-SpendZ is a personal finance tracking tool for recording income and expenses on your device. It is **not** a bank, financial advisor, or tax service.
+FinTrack is a personal finance tracking tool for recording income and expenses on your device. It is **not** a bank, financial advisor, or tax service.
 
 ## 3. Your responsibilities
 
@@ -19,7 +19,7 @@ SpendZ is a personal finance tracking tool for recording income and expenses on 
 
 ## 4. No financial advice
 
-SpendZ provides informational summaries only. Nothing in the app constitutes financial, legal, or tax advice.
+FinTrack provides informational summaries only. Nothing in the app constitutes financial, legal, or tax advice.
 
 ## 5. Data and backups
 
@@ -41,7 +41,7 @@ The app is provided **"as is"** without warranties of any kind, express or impli
 
 ## 8. Limitation of liability
 
-To the maximum extent permitted by law, we are not liable for indirect, incidental, or consequential damages arising from use of SpendZ.
+To the maximum extent permitted by law, we are not liable for indirect, incidental, or consequential damages arising from use of FinTrack.
 
 ## 9. Updates
 

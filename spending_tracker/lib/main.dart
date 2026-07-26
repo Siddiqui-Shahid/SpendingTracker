@@ -1,44 +1,34 @@
-/// Application entry point for SpendZ
+/// Application entry point for FinTrack
 ///
-/// Initializes Hive, Firebase (Crashlytics + Remote Config), and Provider.
+/// Shows the splash immediately, then bootstraps Hive/Firebase/Ads in parallel.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:new_spendz/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 import 'Data/Expense_data.dart';
 import 'Screens/app_root.dart';
+import 'core/bootstrap/app_bootstrap.dart';
+import 'core/bootstrap/app_bootstrap_service.dart';
 import 'core/config/app_config.dart';
-import 'core/services/firebase_service.dart';
-import 'core/services/onboarding_service.dart';
 import 'core/theme/theme.dart';
 import 'utils.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Hive.initFlutter();
-  await Hive.openBox('expense_database');
-  await OnboardingService.ensureInitialized();
-
-  try {
-    await FirebaseService.initialize();
-  } catch (e, stack) {
-    if (kDebugMode) {
-      debugPrint('Firebase initialization skipped or failed: $e');
-    }
-    // App remains usable offline if Firebase fails on first launch.
-    debugPrintStack(stackTrace: stack);
-  }
-
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final Future<void> _bootstrap = AppBootstrapService.initialize();
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +56,15 @@ class MyApp extends StatelessWidget {
                 child: child ?? const SizedBox.shrink(),
               );
             },
-            home: const AppRoot(),
+            home: FutureBuilder<void>(
+              future: _bootstrap,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const AppSplashScreen();
+                }
+                return const AppRoot();
+              },
+            ),
             debugShowCheckedModeBanner: false,
           );
         },

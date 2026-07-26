@@ -35,7 +35,13 @@ class StitchPrimaryButton extends StatelessWidget {
                   children: [
                     Icon(icon, size: 20),
                     const SizedBox(width: StitchSpacing.sm),
-                    Text(label),
+                    Flexible(
+                      child: Text(
+                        label,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
                   ],
                 )
               : Text(label));

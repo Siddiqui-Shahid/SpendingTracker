@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import '../Data/Expense_data.dart';
 import '../Model/Expense_item.dart';
 import '../core/constants/app_strings.dart';
+import '../core/services/ad_service.dart';
 import '../core/utils/category_utils.dart';
+import '../presentation/widgets/ad_banner_widget.dart';
 import '../presentation/widgets/widgets.dart';
 import 'addTransactionPage.dart';
 
@@ -152,6 +154,14 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                   }
                 },
               ),
+              AdBannerWidget(
+                adUnitId: AdService.bannerHistoryUnitId,
+                padding: EdgeInsets.only(
+                  top: StitchSpacing.sm,
+                  left: context.stitchSpacing.gutter,
+                  right: context.stitchSpacing.gutter,
+                ),
+              ),
               Expanded(
                 child: filtered.isEmpty
                     ? StitchEmptyState(
@@ -159,59 +169,15 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                             ? 'No transactions in ${_formatMonth(_selectedMonth)}'
                             : 'No results for "$_searchQuery"',
                       )
-                    : ListView.builder(
+                    : ListView(
                         padding: EdgeInsets.only(
                           bottom: MediaQuery.paddingOf(context).bottom + 96,
                         ),
-                        itemCount: grouped.length,
-                        itemBuilder: (context, sectionIndex) {
-                          final sectionKey = grouped.keys.elementAt(sectionIndex);
-                          final sectionItems = grouped[sectionKey]!;
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              StitchDateSectionHeader(label: sectionKey),
-                              ...sectionItems.map((item) {
-                                final parsed =
-                                    CategoryUtils.parseExpenseName(item.name);
-                                return StitchTransactionTile(
-                                  title: parsed.title,
-                                  subtitle: CategoryUtils.formatTransactionSubtitle(
-                                    item.dateTime,
-                                  ),
-                                  category: parsed.category,
-                                  emoji: parsed.emoji,
-                                  amount: item.amount,
-                                  isIncome: item.type == 'income',
-                                  isEditMode: _isEditMode,
-                                  onTap: () async {
-                                    setState(() => _isEditMode = false);
-                                    await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => AddTransactionPage(
-                                          initialItem: item,
-                                          itemIndex: value
-                                              .getExpenseList()
-                                              .indexOf(item),
-                                          isEdit: true,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  onDelete: () {
-                                    Provider.of<ExpenseData>(
-                                      context,
-                                      listen: false,
-                                    ).deleteExpense(item);
-                                    setState(() {});
-                                  },
-                                );
-                              }),
-                            ],
-                          );
-                        },
+                        children: _buildTransactionList(
+                          context: context,
+                          grouped: grouped,
+                          value: value,
+                        ),
                       ),
               ),
             ],
@@ -219,6 +185,66 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
         );
       },
     );
+  }
+
+  List<Widget> _buildTransactionList({
+    required BuildContext context,
+    required Map<String, List<ExpenseItem>> grouped,
+    required ExpenseData value,
+  }) {
+    final widgets = <Widget>[];
+    var transactionIndex = 0;
+
+    for (final entry in grouped.entries) {
+      widgets.add(StitchDateSectionHeader(label: entry.key));
+
+      for (final item in entry.value) {
+        transactionIndex++;
+        final parsed = CategoryUtils.parseExpenseName(item.name);
+        widgets.add(
+          StitchTransactionTile(
+            title: parsed.title,
+            subtitle: CategoryUtils.formatTransactionSubtitle(item.dateTime),
+            category: parsed.category,
+            emoji: parsed.emoji,
+            amount: item.amount,
+            isIncome: item.type == 'income',
+            isEditMode: _isEditMode,
+            onTap: () async {
+              setState(() => _isEditMode = false);
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => AddTransactionPage(
+                    initialItem: item,
+                    itemIndex: value.getExpenseList().indexOf(item),
+                    isEdit: true,
+                  ),
+                ),
+              );
+            },
+            onDelete: () {
+              Provider.of<ExpenseData>(context, listen: false).deleteExpense(
+                item,
+              );
+              setState(() {});
+            },
+          ),
+        );
+
+        if (transactionIndex == 10 && AdService.adsEnabled) {
+          widgets.add(
+            AdBannerWidget(
+              adUnitId: AdService.bannerHistoryUnitId,
+              padding: const EdgeInsets.symmetric(vertical: StitchSpacing.sm),
+              lazy: true,
+            ),
+          );
+        }
+      }
+    }
+
+    return widgets;
   }
 }
 
