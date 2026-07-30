@@ -1,0 +1,40 @@
+name: flutter_native_ai
+description: A Flutter plugin for native on-device generative AI through Apple Foundation Models and Android Gemini Nano.
+version: 0.5.1
+homepage: https://github.com/bowvie/flutter_native_ai
+repository: https://github.com/bowvie/flutter_native_ai
+issue_tracker: https://github.com/bowvie/flutter_native_ai/issues
+topics:
+  - ai
+  - generative-ai
+  - on-device-ai
+  - text-generation
+  - flutter-plugin
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+  flutter: '>=3.24.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  meta: ^1.16.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  pigeon: ^27.1.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.bowvie.flutter_native_ai
+        pluginClass: FlutterNativeAiPlugin
+      ios:
+        pluginClass: FlutterNativeAiPlugin
+        sharedDarwinSource: true
+      macos:
+        pluginClass: FlutterNativeAiPlugin
+        sharedDarwinSource: true

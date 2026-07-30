@@ -81,16 +81,93 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     return categoryTotals;
   }
 
-  Map<String, double> _dailyTotals(List<ExpenseItem> expenses) {
-    final totals = <String, double>{};
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  /// Builds a chronological spending series for the selected range.
+  ///
+  /// - ≤ 45 days → one bar per calendar day (includes zero-spend days)
+  /// - longer ranges → one bar per month
+  ({List<SpendingTrendPoint> points, String title, String subtitle})
+      _trendSeries(List<ExpenseItem> expenses) {
+    final rangeStart = DateTime(startDate.year, startDate.month, startDate.day);
+    final rangeEnd = DateTime(endDate.year, endDate.month, endDate.day);
+    final dayCount = rangeEnd.difference(rangeStart).inDays + 1;
 
+    final byDay = <DateTime, double>{};
     for (final expense in expenses) {
-      final key = days[expense.dateTime.weekday - 1];
+      final day = DateTime(
+        expense.dateTime.year,
+        expense.dateTime.month,
+        expense.dateTime.day,
+      );
       final amount = double.tryParse(expense.amount) ?? 0;
-      totals[key] = (totals[key] ?? 0) + amount;
+      byDay[day] = (byDay[day] ?? 0) + amount;
     }
-    return totals;
+
+    if (dayCount > 45) {
+      final byMonth = <DateTime, double>{};
+      for (var day = rangeStart;
+          !day.isAfter(rangeEnd);
+          day = day.add(const Duration(days: 1))) {
+        final monthKey = DateTime(day.year, day.month);
+        byMonth[monthKey] = (byMonth[monthKey] ?? 0) + (byDay[day] ?? 0);
+      }
+      const monthNames = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      ];
+      final points = byMonth.entries.map((e) {
+        final m = e.key;
+        final label = monthNames[m.month - 1];
+        final tooltip = '$label ${m.year}';
+        return SpendingTrendPoint(
+          label: label,
+          amount: e.value,
+          tooltipLabel: tooltip,
+        );
+      }).toList();
+      return (
+        points: points,
+        title: 'Monthly Trend',
+        subtitle: 'Total spending for each month in ${_periodLabel().toLowerCase()}',
+      );
+    }
+
+    const weekdayShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const weekdayLong = [
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+      'Friday', 'Saturday', 'Sunday',
+    ];
+    const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+
+    final points = <SpendingTrendPoint>[];
+    for (var i = 0; i < dayCount; i++) {
+      final day = rangeStart.add(Duration(days: i));
+      final amount = byDay[day] ?? 0;
+      final weekday = weekdayShort[day.weekday - 1];
+      final label = dayCount <= 7
+          ? '$weekday ${day.day}'
+          : '${day.day}';
+      final tooltip =
+          '${weekdayLong[day.weekday - 1]}, ${monthNames[day.month - 1]} ${day.day}';
+      points.add(
+        SpendingTrendPoint(
+          label: label,
+          amount: amount,
+          tooltipLabel: tooltip,
+        ),
+      );
+    }
+
+    final spentDays = points.where((p) => p.amount > 0).length;
+    return (
+      points: points,
+      title: 'Daily Trend',
+      subtitle: dayCount <= 7
+          ? 'Spending for each day this week · $spentDays of $dayCount days with spend'
+          : 'Spending for each day · $spentDays of $dayCount days with spend',
+    );
   }
 
   List<MapEntry<String, double>> _getTopCategories(
@@ -212,7 +289,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         final totalEarning = _calculateTotal(periodIncome);
         final categoryTotals = _getSpendingByCategory(periodExpenses);
         final topCategories = _getTopCategories(categoryTotals);
-        final dailyTotals = _dailyTotals(periodExpenses);
+        final trend = _trendSeries(periodExpenses);
 
         return Scaffold(
           appBar: AppBar(
@@ -291,11 +368,18 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Daily Trend',
+                          trend.title,
                           style: context.textTheme.titleMedium,
                         ),
+                        const SizedBox(height: StitchSpacing.xs),
+                        Text(
+                          trend.subtitle,
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: context.colors.onSurfaceVariant,
+                          ),
+                        ),
                         const SizedBox(height: StitchSpacing.md),
-                        StitchDailyBarChart(dailyTotals: dailyTotals),
+                        StitchDailyBarChart(points: trend.points),
                       ],
                     ),
                   ),

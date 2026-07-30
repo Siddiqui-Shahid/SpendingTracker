@@ -2,20 +2,24 @@
 
 A modern, secure Flutter application for tracking personal finances with biometric authentication, expense management, and insightful financial overview.
 
-## � Screenshots
+## 📸 Screenshots
 
 <div align="center">
-   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-11-59-15-297_com.example.new_spendz.jpg" width="200" alt="Home Screen - Balance Overview"/>
-   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-12-40-926_com.example.new_spendz.jpg" width="200" alt="Transaction Management"/>
-   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-05-626_com.example.new_spendz.jpg" width="200" alt="Add Transaction"/>
-   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-19-165_com.example.new_spendz.jpg" width="200" alt="Analysis Screen"/>
+   <img src="spending_tracker/screenshot/home_screen.jpg" width="200" alt="Home Screen - Balance Overview"/>
+   <img src="spending_tracker/screenshot/transaction_history.jpg" width="200" alt="Transaction History"/>
+   <img src="spending_tracker/screenshot/spending_insights.jpg" width="200" alt="Spending Insights"/>
 </div>
 
 <div align="center">
-   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-22-953_com.example.new_spendz.jpg" width="200" alt="Period Filter"/>
-   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-26-451_com.example.new_spendz.jpg" width="200" alt="Category Pie Chart"/>
-   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-13-33-554_com.example.new_spendz.jpg" width="200" alt="Settings Screen"/>
-   <img src="spending_tracker/screenshot/Screenshot_2025-11-01-12-16-43-979_com.example.new_spendz.jpg" width="200" alt="Backup & Restore"/>
+   <img src="spending_tracker/screenshot/add_transaction.jpg" width="200" alt="Add Transaction"/>
+   <img src="spending_tracker/screenshot/insights_daily_trend.jpg" width="200" alt="Daily Trend & Top Categories"/>
+   <img src="spending_tracker/screenshot/categories.jpg" width="200" alt="Categories"/>
+</div>
+
+<div align="center">
+   <img src="spending_tracker/screenshot/add_category.jpg" width="200" alt="Add Category"/>
+   <img src="spending_tracker/screenshot/settings.jpg" width="200" alt="Settings Screen"/>
+   <img src="spending_tracker/screenshot/backup_restore.jpg" width="200" alt="Backup & Restore"/>
 </div>
 
 *Experience the clean, intuitive interface designed for efficient expense tracking*

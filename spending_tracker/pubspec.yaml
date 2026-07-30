@@ -58,7 +58,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  flutter_native_ai: ^0.5.1
+  # Patched Android Gradle (upstream kotlin{} block fails without kotlin plugin).
+  flutter_native_ai:
+    path: packages/flutter_native_ai
 
 dev_dependencies:
   flutter_test:
