@@ -104,9 +104,15 @@ jobs:
           STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          PLAY_SERVICE_ACCOUNT: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
         shell: bash
         run: |
           set -euo pipefail
+          : "${KEYSTORE_BASE64:?Missing GitHub secret ANDROID_KEYSTORE_BASE64}"
+          : "${STORE_PASSWORD:?Missing GitHub secret ANDROID_KEYSTORE_PASSWORD}"
+          : "${KEY_ALIAS:?Missing GitHub secret ANDROID_KEY_ALIAS}"
+          : "${KEY_PASSWORD:?Missing GitHub secret ANDROID_KEY_PASSWORD}"
+          : "${PLAY_SERVICE_ACCOUNT:?Missing GitHub secret PLAY_STORE_SERVICE_ACCOUNT_JSON}"
           printf '%s' "$KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
           {
             printf 'storePassword=%s\n' "$STORE_PASSWORD"

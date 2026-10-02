@@ -2,7 +2,7 @@ group = "com.bowvie.flutter_native_ai"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    val kotlinVersion = "2.1.0"
+    val kotlinVersion = "2.3.0"
     repositories {
         google()
         mavenCentral()
