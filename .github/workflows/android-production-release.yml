@@ -1,0 +1,161 @@
+name: Android production release
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: google-play-production
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Android
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: spending_tracker
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.41.9"
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+  release:
+    name: Build and release Android
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: google-play-production
+    defaults:
+      run:
+        working-directory: spending_tracker
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.41.9"
+          channel: stable
+          cache: true
+
+      - name: Resolve release version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          pubspec_version="$(awk '/^version:/ {print $2; exit}' pubspec.yaml)"
+          base_name="${pubspec_version%%+*}"
+          major_minor="${base_name%.*}"
+          base_patch="${base_name##*.}"
+
+          if ! [[ "$base_patch" =~ ^[0-9]+$ ]]; then
+            echo "pubspec version must end in a numeric patch: $pubspec_version" >&2
+            exit 1
+          fi
+
+          version_name="${major_minor}.$((base_patch + GITHUB_RUN_NUMBER))"
+          version_code="$((100000 + GITHUB_RUN_NUMBER))"
+          release_tag="v${version_name}+${version_code}"
+
+          echo "name=$version_name" >> "$GITHUB_OUTPUT"
+          echo "code=$version_code" >> "$GITHUB_OUTPUT"
+          echo "tag=$release_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Configure Android signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          {
+            printf 'storePassword=%s\n' "$STORE_PASSWORD"
+            printf 'keyPassword=%s\n' "$KEY_PASSWORD"
+            printf 'keyAlias=%s\n' "$KEY_ALIAS"
+            printf 'storeFile=upload-keystore.jks\n'
+          } > android/key.properties
+
+      - name: Build signed app bundle
+        run: >-
+          flutter build appbundle --release
+          --build-name "${{ steps.version.outputs.name }}"
+          --build-number "${{ steps.version.outputs.code }}"
+
+      - name: Create release notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p distribution/whatsnew
+          subject="$(git log -1 --pretty=%s | tr '\n\r' ' ' | cut -c1-450)"
+          printf 'FinTrack %s\n\n%s\n' "${{ steps.version.outputs.name }}" "$subject" \
+            > distribution/whatsnew/whatsnew-en-US
+
+      - name: Preserve release bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: fintrack-${{ steps.version.outputs.tag }}
+          path: spending_tracker/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+
+      - name: Publish to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.zenspend.app
+          releaseFiles: spending_tracker/build/app/outputs/bundle/release/app-release.aab
+          tracks: production
+          status: completed
+          releaseName: FinTrack ${{ steps.version.outputs.name }}
+          whatsNewDirectory: spending_tracker/distribution/whatsnew
+          mappingFile: spending_tracker/build/app/outputs/mapping/release/mapping.txt
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            build/app/outputs/bundle/release/app-release.aab \
+            --target "$GITHUB_SHA" \
+            --title "FinTrack ${{ steps.version.outputs.name }}" \
+            --notes-file distribution/whatsnew/whatsnew-en-US
