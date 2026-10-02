@@ -2,7 +2,7 @@
 
 ## App name
 
-FinTrack by Cyfur: Expenses
+MoneySeer: Expense Tracker
 
 ## Short description
 
@@ -10,7 +10,7 @@ Private expense tracker and money manager with spending insights and backup.
 
 ## Full description
 
-Take control of everyday spending with FinTrack, a private expense tracker and money manager built for fast, simple personal finance tracking. Log income and expenses, see your live balance, understand where your money goes, and build smarter spending habits — without creating an account.
+See where your money goes with MoneySeer, a private expense tracker and money manager made for fast, simple personal finance tracking. Log income and expenses, monitor your live balance, understand spending patterns, and build smarter money habits — without creating an account or connecting a bank.
 
 A simple expense tracker
 
@@ -41,11 +41,11 @@ Privacy-first money management
 • Export a backup and restore it when needed
 • Delete all data from Settings at any time
 
-FinTrack is designed for anyone who wants a clean personal expense tracker, spending tracker, income tracker, or everyday money manager without connecting a bank account.
+MoneySeer is designed for anyone looking for a clean budget tracker, personal expense tracker, spending tracker, income tracker, or everyday money manager without connecting a bank account.
 
-FinTrack may show ads served by Google AdMob. Ads do not use your transaction details. See the privacy policy for details.
+MoneySeer may show ads served by Google AdMob. Ads do not use your transaction details. See the privacy policy for details.
 
-FinTrack is a personal finance tracking tool. It is not a bank, payment app, or financial advisor. Balances, charts, and insights are based only on the information you enter.
+MoneySeer is a personal finance tracking tool. It is not a bank, payment app, or financial advisor. Balances, charts, and insights are based only on the information you enter.
 
 Questions: hello@cyfur.in
 Privacy policy: https://cyfur.in/fintrack/privacy

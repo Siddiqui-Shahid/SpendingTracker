@@ -17,7 +17,7 @@ export 'stitch_shapes.dart';
 export 'stitch_spacing.dart';
 export 'stitch_typography.dart';
 
-/// Stitch / FinTrack theme built from the active design system.
+/// Stitch / MoneySeer theme built from the active design system.
 abstract final class StitchTheme {
   static const Color seedColor = StitchColors.seed;
 
@@ -69,7 +69,8 @@ abstract final class StitchTheme {
 }
 
 /// Root widget that resolves dynamic color on supported platforms.
-class StitchThemedApp extends StatelessWidget {
+/// Caches light/dark [ThemeData] so theme-mode-only changes do not rebuild both.
+class StitchThemedApp extends StatefulWidget {
   const StitchThemedApp({
     super.key,
     required this.builder,
@@ -85,14 +86,44 @@ class StitchThemedApp extends StatelessWidget {
   final ThemeMode themeMode;
 
   @override
+  State<StitchThemedApp> createState() => _StitchThemedAppState();
+}
+
+class _StitchThemedAppState extends State<StitchThemedApp> {
+  ColorScheme? _cachedLightDynamic;
+  ColorScheme? _cachedDarkDynamic;
+  ThemeData? _lightTheme;
+  ThemeData? _darkTheme;
+
+  void _ensureThemes({
+    required ColorScheme? lightDynamic,
+    required ColorScheme? darkDynamic,
+  }) {
+    final schemesChanged = !identical(lightDynamic, _cachedLightDynamic) ||
+        !identical(darkDynamic, _cachedDarkDynamic);
+    if (!schemesChanged && _lightTheme != null && _darkTheme != null) {
+      return;
+    }
+    _cachedLightDynamic = lightDynamic;
+    _cachedDarkDynamic = darkDynamic;
+    _lightTheme = StitchTheme.light(dynamicScheme: lightDynamic);
+    _darkTheme = StitchTheme.dark(dynamicScheme: darkDynamic);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        final lightTheme = StitchTheme.light(dynamicScheme: lightDynamic);
-        final darkTheme = StitchTheme.dark(dynamicScheme: darkDynamic);
-
+        _ensureThemes(
+          lightDynamic: lightDynamic,
+          darkDynamic: darkDynamic,
+        );
         return Builder(
-          builder: (context) => builder(context, lightTheme, darkTheme),
+          builder: (context) => widget.builder(
+            context,
+            _lightTheme!,
+            _darkTheme!,
+          ),
         );
       },
     );

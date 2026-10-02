@@ -1,11 +1,11 @@
 {
-    "name": "FinTrack",
-    "short_name": "FinTrack",
+    "name": "MoneySeer",
+    "short_name": "MoneySeer",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "FinTrack — private expense tracker with biometric security.",
+    "description": "MoneySeer — private expense tracker with biometric security.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

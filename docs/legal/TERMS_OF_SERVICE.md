@@ -1,15 +1,15 @@
-# Terms of Service — FinTrack
+# Terms of Service — MoneySeer
 
-**Last updated:** July 12, 2026  
+**Last updated:** October 2, 2026
 **Contact:** hello@cyfur.in
 
 ## 1. Acceptance
 
-By downloading or using FinTrack, you agree to these Terms of Service.
+By downloading or using MoneySeer, you agree to these Terms of Service.
 
 ## 2. Description of service
 
-FinTrack is a personal finance tracking tool for recording income and expenses on your device. It is **not** a bank, financial advisor, or tax service.
+MoneySeer is a personal finance tracking tool for recording income and expenses on your device. It is **not** a bank, financial advisor, or tax service.
 
 ## 3. Your responsibilities
 
@@ -19,7 +19,7 @@ FinTrack is a personal finance tracking tool for recording income and expenses o
 
 ## 4. No financial advice
 
-FinTrack provides informational summaries only. Nothing in the app constitutes financial, legal, or tax advice.
+MoneySeer provides informational summaries only. Nothing in the app constitutes financial, legal, or tax advice.
 
 ## 5. Data and backups
 
@@ -41,7 +41,7 @@ The app is provided **"as is"** without warranties of any kind, express or impli
 
 ## 8. Limitation of liability
 
-To the maximum extent permitted by law, we are not liable for indirect, incidental, or consequential damages arising from use of FinTrack.
+To the maximum extent permitted by law, we are not liable for indirect, incidental, or consequential damages arising from use of MoneySeer.
 
 ## 9. Updates
 

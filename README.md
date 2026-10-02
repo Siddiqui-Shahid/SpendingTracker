@@ -24,7 +24,23 @@ A modern, secure Flutter application for tracking personal finances with biometr
 
 *Experience the clean, intuitive interface designed for efficient expense tracking*
 
-## �📋 Table of Contents
+### Tablet
+
+<div align="center">
+   <img src="spending_tracker/screenshot/tablet/home_screen.png" width="350" alt="Tablet - Home Screen"/>
+   <img src="spending_tracker/screenshot/tablet/transaction_history.png" width="350" alt="Tablet - Transaction History"/>
+   <img src="spending_tracker/screenshot/tablet/spending_insights.png" width="350" alt="Tablet - Spending Insights"/>
+</div>
+
+<div align="center">
+   <img src="spending_tracker/screenshot/tablet/add_transaction.png" width="350" alt="Tablet - Add Transaction"/>
+   <img src="spending_tracker/screenshot/tablet/categories.png" width="350" alt="Tablet - Categories"/>
+   <img src="spending_tracker/screenshot/tablet/add_category.png" width="350" alt="Tablet - Add Category"/>
+</div>
+
+*Optimized layouts for larger screens with the same powerful features*
+
+## 📋 Table of Contents
 
 - [Features](#features)
 - [Project Structure](#project-structure)

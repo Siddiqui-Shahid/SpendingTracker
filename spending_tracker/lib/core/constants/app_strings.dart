@@ -1,10 +1,10 @@
-/// Centralized branding and copy for the FinTrack app.
+/// Centralized branding and copy for the MoneySeer app.
 abstract final class AppStrings {
   /// Display name shown in app bars, lock screen, etc.
-  static const String appName = 'FinTrack';
+  static const String appName = 'MoneySeer';
 
   /// Alternate Stitch project brand name.
-  static const String stitchBrandName = 'FinTrack';
+  static const String stitchBrandName = 'MoneySeer';
 
   static const String currencySymbol = '₹';
 

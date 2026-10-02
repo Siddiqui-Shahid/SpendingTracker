@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Data/Expense_data.dart';
 import '../Model/Expense_item.dart';
-import '../core/constants/app_strings.dart';
 import '../core/services/ad_service.dart';
-import '../core/utils/category_utils.dart';
-import '../presentation/widgets/ad_banner_widget.dart';
 import '../presentation/widgets/widgets.dart';
 import 'addTransactionPage.dart';
 
@@ -116,20 +113,20 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
           appBar: AppBar(
             title: const Text(AppStrings.transactionHistory),
             centerTitle: true,
-            actions: [
-              IconButton(
-                icon: Icon(
-                  filtered.isEmpty
-                      ? Icons.edit_outlined
-                      : (_isEditMode ? Icons.close : Icons.edit_outlined),
-                ),
-                tooltip: _isEditMode ? 'Done' : 'Edit',
-                onPressed: filtered.isEmpty
-                    ? null
-                    : () => setState(() => _isEditMode = !_isEditMode),
-              ),
-            ],
           ),
+          floatingActionButton: filtered.isEmpty
+              ? null
+              : StitchFab(
+                  heroTag: 'history_edit_fab',
+                  icon: _isEditMode
+                      ? Icons.close_rounded
+                      : Icons.edit_outlined,
+                  label: _isEditMode ? 'Done' : 'Edit',
+                  tooltip: _isEditMode ? 'Done editing' : 'Edit transactions',
+                  onPressed: () =>
+                      setState(() => _isEditMode = !_isEditMode),
+                ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           body: Column(
             children: [
               StitchSearchField(

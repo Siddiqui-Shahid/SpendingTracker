@@ -3,10 +3,8 @@ import 'package:provider/provider.dart';
 import '../Data/Expense_data.dart';
 import '../Model/Expense_item.dart';
 import '../Data/hive_database.dart';
-import '../core/constants/app_strings.dart';
+import '../core/analytics/analytics_filter.dart';
 import '../core/services/ad_service.dart';
-import '../core/utils/category_utils.dart';
-import '../presentation/widgets/ad_banner_widget.dart';
 import '../presentation/widgets/widgets.dart';
 
 enum Period { week, month, year }
@@ -26,6 +24,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   DateTime? customStartDate;
   DateTime? customEndDate;
   String? customLabel;
+  AnalyticsFilter _filter = AnalyticsFilter.empty;
 
   @override
   void initState() {
@@ -52,15 +51,10 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     });
   }
 
-  List<ExpenseItem> _getExpensesForPeriod(
-    List<dynamic> allExpenses, {
-    String? type,
-  }) {
+  List<ExpenseItem> _getExpensesForPeriod(List<dynamic> allExpenses) {
     return allExpenses.whereType<ExpenseItem>().where((expense) {
-      final inRange = !expense.dateTime.isBefore(startDate) &&
+      return !expense.dateTime.isBefore(startDate) &&
           !expense.dateTime.isAfter(endDate.add(const Duration(days: 1)));
-      if (type != null) return inRange && expense.type == type;
-      return inRange;
     }).toList();
   }
 
@@ -71,7 +65,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     );
   }
 
-  Map<String, double> _getSpendingByCategory(List<ExpenseItem> expenses) {
+  Map<String, double> _getTotalsByCategory(List<ExpenseItem> expenses) {
     final categoryTotals = <String, double>{};
     for (final expense in expenses) {
       final category = CategoryUtils.extractCategory(expense.name);
@@ -86,7 +80,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   /// - ≤ 45 days → one bar per calendar day (includes zero-spend days)
   /// - longer ranges → one bar per month
   ({List<SpendingTrendPoint> points, String title, String subtitle})
-      _trendSeries(List<ExpenseItem> expenses) {
+      _trendSeries(List<ExpenseItem> expenses, {required String noun}) {
     final rangeStart = DateTime(startDate.year, startDate.month, startDate.day);
     final rangeEnd = DateTime(endDate.year, endDate.month, endDate.day);
     final dayCount = rangeEnd.difference(rangeStart).inDays + 1;
@@ -127,7 +121,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       return (
         points: points,
         title: 'Monthly Trend',
-        subtitle: 'Total spending for each month in ${_periodLabel().toLowerCase()}',
+        subtitle:
+            'Total $noun for each month in ${_periodLabel().toLowerCase()}',
       );
     }
 
@@ -146,9 +141,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       final day = rangeStart.add(Duration(days: i));
       final amount = byDay[day] ?? 0;
       final weekday = weekdayShort[day.weekday - 1];
-      final label = dayCount <= 7
-          ? '$weekday ${day.day}'
-          : '${day.day}';
+      final label = dayCount <= 7 ? '$weekday ${day.day}' : '${day.day}';
       final tooltip =
           '${weekdayLong[day.weekday - 1]}, ${monthNames[day.month - 1]} ${day.day}';
       points.add(
@@ -160,13 +153,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       );
     }
 
-    final spentDays = points.where((p) => p.amount > 0).length;
+    final activeDays = points.where((p) => p.amount > 0).length;
     return (
       points: points,
       title: 'Daily Trend',
       subtitle: dayCount <= 7
-          ? 'Spending for each day this week · $spentDays of $dayCount days with spend'
-          : 'Spending for each day · $spentDays of $dayCount days with spend',
+          ? '$noun for each day this week · $activeDays of $dayCount days active'
+          : '$noun for each day · $activeDays of $dayCount days active',
     );
   }
 
@@ -176,6 +169,17 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     final sorted = categoryTotals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return sorted.take(3).toList();
+  }
+
+  Future<void> _openFilters() async {
+    final categories = HiveDataBase().getCategory();
+    final result = await AnalyticsFilterSheet.show(
+      context,
+      initial: _filter,
+      availableCategories: categories,
+    );
+    if (result == null || !mounted) return;
+    setState(() => _filter = result);
   }
 
   Future<void> _showCustomDateRangeDialog() async {
@@ -209,7 +213,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       if (picked != null) {
                         setDialogState(() {
                           tempStart = picked;
-                          if (tempEnd != null && tempEnd!.isBefore(tempStart!)) {
+                          if (tempEnd != null &&
+                              tempEnd!.isBefore(tempStart!)) {
                             tempEnd = null;
                           }
                         });
@@ -282,19 +287,43 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     return Consumer<ExpenseData>(
       builder: (context, expenseData, _) {
         final allExpenses = expenseData.getExpenseList();
+        final periodItems = _getExpensesForPeriod(allExpenses);
+        final filtered = _filter.apply(periodItems);
         final periodExpenses =
-            _getExpensesForPeriod(allExpenses, type: 'expense');
-        final periodIncome = _getExpensesForPeriod(allExpenses, type: 'income');
+            filtered.where((e) => e.type == 'expense').toList();
+        final periodIncome =
+            filtered.where((e) => e.type == 'income').toList();
         final totalSpending = _calculateTotal(periodExpenses);
         final totalEarning = _calculateTotal(periodIncome);
-        final categoryTotals = _getSpendingByCategory(periodExpenses);
+
+        final chartItems = switch (_filter.type) {
+          AnalyticsTxnType.income => periodIncome,
+          AnalyticsTxnType.expense => periodExpenses,
+          AnalyticsTxnType.all => periodExpenses,
+        };
+        final chartNoun = _filter.type == AnalyticsTxnType.income
+            ? 'income'
+            : 'spending';
+        final categoryTotals = _getTotalsByCategory(chartItems);
+        final chartTotal = _calculateTotal(chartItems);
         final topCategories = _getTopCategories(categoryTotals);
-        final trend = _trendSeries(periodExpenses);
+        final trend = _trendSeries(chartItems, noun: chartNoun);
 
         return Scaffold(
           appBar: AppBar(
             title: const Text(AppStrings.spendingInsights),
             centerTitle: true,
+            actions: [
+              IconButton(
+                tooltip: 'Filter insights',
+                onPressed: _openFilters,
+                icon: Badge(
+                  isLabelVisible: _filter.isActive,
+                  label: Text('${_filter.activeCount}'),
+                  child: const Icon(Icons.filter_list_rounded),
+                ),
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             padding: EdgeInsets.only(
@@ -326,6 +355,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   onSelected: (index) => _setDateRange(Period.values[index]),
                   onCustomTap: _showCustomDateRangeDialog,
                 ),
+                AnalyticsActiveFilterBar(
+                  filter: _filter,
+                  onClear: () => setState(() => _filter = AnalyticsFilter.empty),
+                  onEdit: _openFilters,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(StitchSpacing.md),
                   child: StitchAppCard(
@@ -333,20 +367,22 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Spending by Category',
+                          _filter.type == AnalyticsTxnType.income
+                              ? 'Income by Category'
+                              : 'Spending by Category',
                           style: context.textTheme.titleMedium,
                         ),
                         const SizedBox(height: StitchSpacing.md),
                         Center(
                           child: StitchDonutChart(
                             categoryTotals: categoryTotals,
-                            totalSpending: totalSpending,
+                            totalSpending: chartTotal,
                           ),
                         ),
                         if (categoryTotals.isNotEmpty) ...[
                           const Divider(),
                           const SizedBox(height: StitchSpacing.sm),
-                          ..._buildCategoryLegend(categoryTotals, totalSpending),
+                          ..._buildCategoryLegend(categoryTotals, chartTotal),
                         ],
                       ],
                     ),
@@ -389,12 +425,22 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const StitchSectionHeader(
-                        title: 'Top Spending Categories',
+                      StitchSectionHeader(
+                        title: _filter.type == AnalyticsTxnType.income
+                            ? 'Top Income Categories'
+                            : 'Top Spending Categories',
                         padding: EdgeInsets.zero,
                       ),
                       const SizedBox(height: StitchSpacing.sm),
-                      ..._buildTopCategoriesList(topCategories, totalSpending),
+                      if (topCategories.isEmpty)
+                        Text(
+                          'No matching transactions for these filters.',
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            color: context.colors.onSurfaceVariant,
+                          ),
+                        )
+                      else
+                        ..._buildTopCategoriesList(topCategories, chartTotal),
                     ],
                   ),
                 ),

@@ -20,7 +20,7 @@ flutter build apk --release
 APK="$ROOT/build/app/outputs/flutter-apk/app-release.apk"
 echo ""
 echo "Done: $APK"
-echo "Package: com.zenspend.app | Label: FinTrack"
+echo "Package: com.zenspend.app | Label: MoneySeer"
 echo ""
 echo "If the device still shows the old name or icon:"
 echo "  1. Uninstall any old 'spending_tracker' app (com.example.spending_tracker)."

@@ -28,7 +28,7 @@ void main() {
       'versionNumber': '1',
       'updateTime': DateTime.now().toUtc().toIso8601String(),
       'updateUser': {'email': 'hello@cyfur.in'},
-      'description': 'FinTrack Remote Config',
+      'description': 'MoneySeer Remote Config',
     },
   };
 
@@ -52,6 +52,6 @@ String _description(String key) {
     AppConfig.rcPrivacyPolicyUpdated => 'Privacy Policy last updated label.',
     AppConfig.rcTermsUpdated => 'Terms last updated label.',
     AppConfig.rcSupportEmail => 'Support email shown in About.',
-    _ => 'FinTrack Remote Config parameter.',
+    _ => 'MoneySeer Remote Config parameter.',
   };
 }

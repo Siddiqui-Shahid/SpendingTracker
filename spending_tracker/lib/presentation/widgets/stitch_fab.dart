@@ -9,6 +9,7 @@ class StitchFab extends StatelessWidget {
     this.icon = Icons.add_rounded,
     this.tooltip = 'Add transaction',
     this.heroTag,
+    this.label,
   });
 
   final VoidCallback onPressed;
@@ -16,9 +17,34 @@ class StitchFab extends StatelessWidget {
   final String tooltip;
   final Object? heroTag;
 
+  /// When set, renders an extended FAB with [label] beside the icon.
+  final String? label;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final shape = RoundedRectangleBorder(
+      borderRadius: context.stitchShapes.borderRadiusXxl,
+    );
+
+    if (label != null) {
+      return Semantics(
+        button: true,
+        label: tooltip,
+        child: FloatingActionButton.extended(
+          heroTag: heroTag ?? 'stitch_fab_extended',
+          onPressed: onPressed,
+          tooltip: tooltip,
+          elevation: 1,
+          highlightElevation: 2,
+          backgroundColor: colors.primaryContainer,
+          foregroundColor: colors.onPrimaryContainer,
+          shape: shape,
+          icon: Icon(icon, size: 24),
+          label: Text(label!),
+        ),
+      );
+    }
 
     return Semantics(
       button: true,
@@ -31,9 +57,7 @@ class StitchFab extends StatelessWidget {
         highlightElevation: 2,
         backgroundColor: colors.primaryContainer,
         foregroundColor: colors.onPrimaryContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: context.stitchShapes.borderRadiusXxl,
-        ),
+        shape: shape,
         child: Icon(icon, size: 28),
       ),
     );

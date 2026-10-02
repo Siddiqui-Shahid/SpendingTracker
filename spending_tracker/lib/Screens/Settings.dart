@@ -86,6 +86,10 @@ class Settings extends StatelessWidget {
           listen: false,
         ).eraseAndResetAll();
         if (context.mounted) {
+          Provider.of<ThemeController>(
+            context,
+            listen: false,
+          ).resetToSystem();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('All Data Erased and Reset to Default'),
@@ -136,6 +140,69 @@ class Settings extends StatelessWidget {
                         subtitle: 'Add or Remove',
                         trailing: const Icon(Icons.keyboard_arrow_right),
                         onTap: () => handleTap(context),
+                      ),
+                      const StitchSectionHeader(
+                        title: 'Appearance',
+                        compact: true,
+                        padding: EdgeInsets.zero,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          StitchSpacing.md,
+                          StitchSpacing.xs,
+                          StitchSpacing.md,
+                          StitchSpacing.sm,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Theme',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            const SizedBox(height: StitchSpacing.xs),
+                            Text(
+                              'Light, dark, or match your device',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                            ),
+                            const SizedBox(height: StitchSpacing.sm),
+                            Consumer<ThemeController>(
+                              builder: (context, themeController, _) {
+                                return SegmentedButton<ThemeMode>(
+                                  segments: const [
+                                    ButtonSegment<ThemeMode>(
+                                      value: ThemeMode.light,
+                                      label: Text('Light'),
+                                      icon: Icon(Icons.light_mode_outlined),
+                                    ),
+                                    ButtonSegment<ThemeMode>(
+                                      value: ThemeMode.dark,
+                                      label: Text('Dark'),
+                                      icon: Icon(Icons.dark_mode_outlined),
+                                    ),
+                                    ButtonSegment<ThemeMode>(
+                                      value: ThemeMode.system,
+                                      label: Text('Auto'),
+                                      icon: Icon(Icons.brightness_auto),
+                                    ),
+                                  ],
+                                  selected: {themeController.themeMode},
+                                  onSelectionChanged: (selection) {
+                                    themeController
+                                        .setThemeMode(selection.first);
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                       const StitchSectionHeader(
                         title: 'Security',

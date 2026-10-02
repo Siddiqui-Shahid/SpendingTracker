@@ -1,4 +1,4 @@
-# Store Release Checklist — FinTrack
+# Store Release Checklist — MoneySeer
 
 Bundle ID: `com.zenspend.app`  
 Firebase project: `zenspend-af9c2`
@@ -25,9 +25,11 @@ Firebase project: `zenspend-af9c2`
 2. **Data safety form:**
    - Financial info: **Not collected** (stored locally only)
    - Crash logs: **Collected**, not shared, for app functionality
+   - Advertising ID: **Collected** via Google AdMob (Android), shared with Google, for advertising
    - Data encrypted in transit: Yes (Firebase HTTPS)
    - Users can request deletion: Yes (in-app Erase all Data)
-3. **Privacy policy URL** (required)
+3. **Advertising ID declaration:** Answer **Yes** — app uses Google AdMob; `com.google.android.gms.permission.AD_ID` is merged from the Mobile Ads SDK
+4. **Privacy policy URL** (required)
 4. **Upload key** — create with `keytool` and configure `android/key.properties`
 5. **Content rating** questionnaire
 6. **Target audience** — not designed for children
@@ -68,7 +70,7 @@ See [RELEASE.md](RELEASE.md) in this folder for Android keystore and iOS certifi
 
 ## Accessibility notes
 
-FinTrack includes Semantics on key widgets (amounts, charts, transaction tiles). Before release, verify:
+MoneySeer includes Semantics on key widgets (amounts, charts, transaction tiles). Before release, verify:
 
 - All buttons have labels
 - Balance is announced correctly

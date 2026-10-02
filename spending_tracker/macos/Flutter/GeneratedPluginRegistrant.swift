@@ -14,6 +14,7 @@ import firebase_remote_config
 import flutter_native_ai
 import local_auth_darwin
 import package_info_plus
+import speech_to_text
 import url_launcher_macos
 import webview_flutter_wkwebview
 
@@ -27,6 +28,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FlutterNativeAiPlugin.register(with: registry.registrar(forPlugin: "FlutterNativeAiPlugin"))
   LocalAuthPlugin.register(with: registry.registrar(forPlugin: "LocalAuthPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))
+  SpeechToTextPlugin.register(with: registry.registrar(forPlugin: "SpeechToTextPlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
   WebViewFlutterPlugin.register(with: registry.registrar(forPlugin: "WebViewFlutterPlugin"))
 }

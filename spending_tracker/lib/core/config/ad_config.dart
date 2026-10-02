@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-/// AdMob identifiers for FinTrack (Android production + Google test units).
+/// AdMob identifiers for MoneySeer (Android production + Google test units).
 abstract final class AdConfig {
   static const String androidAppId = 'ca-app-pub-3697710283934778~6564476712';
 

@@ -18,7 +18,8 @@
 /// final expenses = expenseData.getExpenseList();
 /// ```
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:new_spendz/Data/hive_database.dart';
 import '../Model/Expense_item.dart';
 
@@ -38,7 +39,10 @@ class ExpenseData extends ChangeNotifier {
   final db = HiveDataBase();
 
   ExpenseData() {
-    prepareData();
+    // Hive may not be open yet during early app construction; prefs load after bootstrap.
+    if (Hive.isBoxOpen('expense_database')) {
+      prepareData();
+    }
   }
 
   /// List of all transactions (expenses and income)

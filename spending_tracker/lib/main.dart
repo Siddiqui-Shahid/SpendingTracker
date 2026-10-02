@@ -1,4 +1,4 @@
-/// Application entry point for FinTrack
+/// Application entry point for MoneySeer
 ///
 /// Shows the splash immediately, then bootstraps Hive/Firebase/Ads in parallel.
 
@@ -29,43 +29,59 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final Future<void> _bootstrap = AppBootstrapService.initialize();
+  bool _loadedPrefsAfterBootstrap = false;
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ExpenseData(),
-      child: StitchThemedApp(
-        themeMode: ThemeMode.system,
-        builder: (context, lightTheme, darkTheme) {
-          return MaterialApp(
-            title: '${AppConfig.appName} - Expense Tracker',
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            themeMode: ThemeMode.system,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: const Locale('en'),
-            scrollBehavior: MyCustomScrollBehavior(),
-            builder: (context, child) {
-              return StitchSystemUi(
-                child: child ?? const SizedBox.shrink(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ExpenseData()),
+        ChangeNotifierProvider(create: (_) => ThemeController()),
+      ],
+      child: Consumer<ThemeController>(
+        builder: (context, themeController, _) {
+          final themeMode = themeController.themeMode;
+          return StitchThemedApp(
+            themeMode: themeMode,
+            builder: (context, lightTheme, darkTheme) {
+              return MaterialApp(
+                title: '${AppConfig.appName} - Expense Tracker',
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: themeMode,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: AppLocalizations.supportedLocales,
+                locale: const Locale('en'),
+                scrollBehavior: MyCustomScrollBehavior(),
+                builder: (context, child) {
+                  return StitchSystemUi(
+                    child: child ?? const SizedBox.shrink(),
+                  );
+                },
+                home: FutureBuilder<void>(
+                  future: _bootstrap,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const AppSplashScreen();
+                    }
+                    if (!_loadedPrefsAfterBootstrap) {
+                      _loadedPrefsAfterBootstrap = true;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        context.read<ExpenseData>().prepareData();
+                        context.read<ThemeController>().load();
+                      });
+                    }
+                    return const AppRoot();
+                  },
+                ),
+                debugShowCheckedModeBanner: false,
               );
             },
-            home: FutureBuilder<void>(
-              future: _bootstrap,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const AppSplashScreen();
-                }
-                return const AppRoot();
-              },
-            ),
-            debugShowCheckedModeBanner: false,
           );
         },
       ),

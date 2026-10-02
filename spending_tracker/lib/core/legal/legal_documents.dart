@@ -1,22 +1,22 @@
 /// Default legal copy bundled with the app when Remote Config is unavailable.
 abstract final class LegalDocuments {
-  static const String privacyPolicyUpdated = 'July 12, 2026';
-  static const String termsUpdated = 'July 12, 2026';
+  static const String privacyPolicyUpdated = 'October 2, 2026';
+  static const String termsUpdated = 'October 2, 2026';
 
   static const String privacyPolicy = '''
-FinTrack Privacy Policy
+MoneySeer Privacy Policy
 
-Last updated: July 12, 2026
+Last updated: October 2, 2026
 Contact: hello@cyfur.in
 
 1. Introduction
 
-FinTrack ("we", "our", "us") is a personal expense tracking application published by Cyfur. This Privacy Policy explains how we handle information when you use the FinTrack mobile application ("the App").
+MoneySeer ("we", "our", "us") is a personal expense tracking application published by Cyfur. This Privacy Policy explains how we handle information when you use the MoneySeer mobile application ("the App").
 
 2. Information we collect
 
 2.1 Data stored on your device
-FinTrack stores the following data locally on your device unless you choose to export it:
+MoneySeer stores the following data locally on your device unless you choose to export it:
 • Transaction descriptions, amounts, dates, and types (income or expense)
 • Custom categories and app preferences
 • Biometric unlock preference (enabled or disabled)
@@ -25,14 +25,17 @@ FinTrack stores the following data locally on your device unless you choose to e
 We do not upload your transaction data to our servers by default.
 
 2.2 On-device AI (optional)
-The AI Savings Coach builds a local index of your spending habits on your device (retrieval-augmented generation). When Apple Intelligence (iOS) or Gemini Nano (Android) is available, advice is generated on-device. If the on-device model is unavailable, FinTrack shows rule-based tips computed from the same local data. Financial details used for coaching are not sent to Cyfur servers or to cloud AI APIs operated by us.
+The AI Savings Coach builds a local index of your spending habits on your device (retrieval-augmented generation). When Apple Intelligence (iOS) or Gemini Nano (Android) is available, advice is generated on-device. If the on-device model is unavailable, MoneySeer shows rule-based tips computed from the same local data. Financial details used for coaching are not sent to Cyfur servers or to cloud AI APIs operated by us.
 
 2.3 Data sent to third-party services
 To keep the App reliable and up to date, we use Google Firebase:
 • Crashlytics: anonymous crash reports (device model, OS version, app version, stack traces). Your transaction details are not intentionally included.
-• Remote Config: fetches app settings such as minimum supported version, update messages, and legal document text. No personal financial data is sent.
+• Remote Config: fetches app settings such as minimum supported version, update messages, ad settings, and legal document text. No personal financial data is sent.
 
-2.4 Support communications
+2.4 Advertising (Android)
+On Android, MoneySeer may show ads through Google AdMob. Google may collect and use your device's advertising identifier (Advertising ID), IP address, device information, and ad interaction data to deliver, measure, and improve ads. We do not share your transaction data with advertisers. Ad display may be controlled remotely via Firebase Remote Config. Learn more about how Google uses data: https://policies.google.com/privacy. You can manage ad personalization at https://adssettings.google.com/.
+
+2.5 Support communications
 If you email hello@cyfur.in, we receive the information you include in your message (such as your email address and message content) solely to respond to your request.
 
 3. How we use information
@@ -42,6 +45,7 @@ We use collected information to:
 • Generate private savings tips from local spending context (on-device AI or rules)
 • Diagnose and fix crashes
 • Deliver app updates and legal notices
+• Display and measure ads on Android (via Google AdMob)
 • Respond to support requests
 
 We do not sell your personal information.
@@ -50,7 +54,7 @@ We do not sell your personal information.
 
 • Biometric authentication: to lock the App (optional)
 • Storage / files: to export and restore backup files
-• Internet: for Crashlytics, Remote Config, and support links
+• Internet: for Crashlytics, Remote Config, AdMob, and support links
 
 5. Data retention and deletion
 
@@ -62,7 +66,7 @@ We recommend enabling biometric unlock and keeping your device OS up to date. Yo
 
 7. Children's privacy
 
-FinTrack is not directed to children under 13. We do not knowingly collect information from children.
+MoneySeer is not directed to children under 13. We do not knowingly collect information from children.
 
 8. International users
 
@@ -78,18 +82,18 @@ Questions about this policy: hello@cyfur.in
 ''';
 
   static const String termsOfService = '''
-FinTrack Terms of Service
+MoneySeer Terms of Service
 
-Last updated: July 12, 2026
+Last updated: October 2, 2026
 Contact: hello@cyfur.in
 
 1. Agreement
 
-By downloading, installing, or using FinTrack ("the App"), you agree to these Terms of Service ("Terms"). If you do not agree, do not use the App.
+By downloading, installing, or using MoneySeer ("the App"), you agree to these Terms of Service ("Terms"). If you do not agree, do not use the App.
 
 2. Description of service
 
-FinTrack is a personal finance tracking tool that helps you record income and expenses on your device. FinTrack is not a bank, payment processor, financial advisor, accountant, or tax preparation service.
+MoneySeer is a personal finance tracking tool that helps you record income and expenses on your device. MoneySeer is not a bank, payment processor, financial advisor, accountant, or tax preparation service.
 
 3. Eligibility
 
@@ -97,7 +101,7 @@ You must be at least 13 years old (or the minimum age required in your jurisdict
 
 4. Your account and device
 
-FinTrack does not require a user account. You are responsible for:
+MoneySeer does not require a user account. You are responsible for:
 • The accuracy of information you enter
 • Securing your device and any backup files
 • Compliance with applicable laws
@@ -127,7 +131,7 @@ We may release updates that add, modify, or remove features. Some updates may be
 
 10. Third-party services
 
-The App uses Google Firebase (Crashlytics, Remote Config). Your use of those services is also subject to Google's terms and privacy policies.
+The App uses Google Firebase (Crashlytics, Remote Config) and Google AdMob (Android advertising). Your use of those services is also subject to Google's terms and privacy policies.
 
 11. Disclaimer of warranties
 
