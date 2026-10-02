@@ -1,4 +1,4 @@
-# FinTrack 30-Day Launch Plan
+# MoneySeer 30-Day Launch Plan
 
 ## Goal
 
@@ -33,7 +33,7 @@ Base URL: `https://play.google.com/store/apps/details?id=com.zenspend.app`
 
 ### Day 2 — Show the problem
 
-Post: “Most finance apps ask for your bank login. FinTrack does not.” Demonstrate local storage, optional app lock, and export/restore.
+Post: “Most finance apps ask for your bank login. MoneySeer does not.” Demonstrate local storage, optional app lock, and export/restore.
 
 ### Day 3 — Show the speed
 
@@ -71,9 +71,9 @@ Use this content mix: 70% useful education, 20% product demonstration, 10% direc
 
 ### LinkedIn
 
-I built FinTrack because tracking spending should not require handing over your bank login.
+I built MoneySeer because tracking spending should not require handing over your bank login.
 
-FinTrack is a private Android expense tracker that lets you log income and spending, understand categories and trends, and keep a backup—all without creating an account. Your transaction data stays on your device.
+MoneySeer is a private Android expense tracker that lets you log income and spending, understand categories and trends, and keep a backup—all without creating an account. Your transaction data stays on your device.
 
 The first public release is now on Google Play. I would value honest feedback on one question: does it make daily expense tracking feel simple enough to keep doing?
 
@@ -81,7 +81,7 @@ Download: [tagged Google Play link]
 
 ### X
 
-I built FinTrack: a private Android expense tracker with no account and no bank connection.
+I built MoneySeer: a private Android expense tracker with no account and no bank connection.
 
 Log expenses fast. See where money goes. Keep the data on your device.
 
@@ -93,7 +93,7 @@ Feedback is genuinely welcome.
 
 Title: I built a private expense tracker that does not require a bank connection
 
-I wanted a small, fast way to record spending without creating another financial account, so I built FinTrack for Android. It supports income and expenses, categories, search, charts, optional biometric lock, and local backup/restore. Transaction data stays on the device.
+I wanted a small, fast way to record spending without creating another financial account, so I built MoneySeer for Android. It supports income and expenses, categories, search, charts, optional biometric lock, and local backup/restore. Transaction data stays on the device.
 
 I am looking for honest feedback, especially about what feels slow or confusing during the first five minutes. Link: [tagged link]
 
@@ -103,7 +103,7 @@ I am looking for honest feedback, especially about what feels slow or confusing 
 2. Add an expense in two taps.
 3. Open the category insight screen.
 4. Show the privacy/backup screen.
-5. “FinTrack — private expense tracking, now on Android.”
+5. “MoneySeer — private expense tracking, now on Android.”
 
 ### Product Hunt
 

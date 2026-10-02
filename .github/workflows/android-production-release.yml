@@ -133,7 +133,7 @@ jobs:
           set -euo pipefail
           mkdir -p distribution/whatsnew
           subject="$(git log -1 --pretty=%s | tr '\n\r' ' ' | cut -c1-450)"
-          printf 'FinTrack %s\n\n%s\n' "${{ steps.version.outputs.name }}" "$subject" \
+          printf 'MoneySeer %s\n\n%s\n' "${{ steps.version.outputs.name }}" "$subject" \
             > distribution/whatsnew/whatsnew-en-US
 
       - name: Preserve release bundle
@@ -151,7 +151,7 @@ jobs:
           releaseFiles: spending_tracker/build/app/outputs/bundle/release/app-release.aab
           tracks: production
           status: completed
-          releaseName: FinTrack ${{ steps.version.outputs.name }}
+          releaseName: MoneySeer ${{ steps.version.outputs.name }}
           whatsNewDirectory: spending_tracker/distribution/whatsnew
           mappingFile: spending_tracker/build/app/outputs/mapping/release/mapping.txt
 
@@ -163,5 +163,5 @@ jobs:
           gh release create "${{ steps.version.outputs.tag }}" \
             build/app/outputs/bundle/release/app-release.aab \
             --target "$GITHUB_SHA" \
-            --title "FinTrack ${{ steps.version.outputs.name }}" \
+            --title "MoneySeer ${{ steps.version.outputs.name }}" \
             --notes-file distribution/whatsnew/whatsnew-en-US
