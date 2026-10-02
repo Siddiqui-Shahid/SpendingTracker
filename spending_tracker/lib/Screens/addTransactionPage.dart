@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:new_spendz/Data/Expense_data.dart';
 import 'package:new_spendz/Model/Expense_item.dart';
 import 'package:new_spendz/Screens/Settings/Categories.dart';
-import '../core/constants/app_strings.dart';
+import '../core/voice/voice_input_log.dart';
+import '../core/voice/voice_transaction_parser.dart';
 import '../presentation/widgets/widgets.dart';
 
 enum TypeEI { expense, income }
@@ -49,6 +50,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   ];
 
   var avlC = <String>[];
+
+  static const _recommendedCategoryLimit = 20;
 
   @override
   void initState() {
@@ -139,6 +142,206 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     });
   }
 
+  Future<void> _openVoiceInput() async {
+    VoiceInputLog.d('addPage.openVoice', {
+      'categoryCount': avlC.length,
+      'isEdit': widget.isEdit,
+    });
+    final draft = await VoiceTransactionSheet.show(
+      context,
+      knownCategories: avlC,
+    );
+    VoiceInputLog.d('addPage.sheetClosed', {
+      'draftReturned': draft != null,
+    });
+    if (draft == null || !mounted) {
+      VoiceInputLog.d('addPage.apply.skipped');
+      return;
+    }
+    await _applyVoiceDraft(draft);
+  }
+
+  Future<void> _applyVoiceDraft(VoiceTransactionDraft draft) async {
+    VoiceInputLog.draft('addPage.apply.start', draft);
+    setState(() {
+      if (draft.type != null) {
+        selectedIndex = draft.type == VoiceTransactionType.income
+            ? TypeEI.income
+            : TypeEI.expense;
+        selectedAccessories = {selectedIndex};
+        VoiceInputLog.d('addPage.apply.type', {'value': selectedIndex.name});
+      }
+      if (draft.amount != null) {
+        final amount = draft.amount!;
+        _amountText = amount == amount.roundToDouble()
+            ? amount.toInt().toString()
+            : amount.toString();
+        VoiceInputLog.d('addPage.apply.amount', {'value': _amountText});
+      }
+      if (draft.title != null && draft.title!.trim().isNotEmpty) {
+        title = draft.title!.trim();
+        _titleController.text = title!;
+        VoiceInputLog.d('addPage.apply.title', {'value': title});
+      }
+      if (draft.date != null) {
+        final existing = dateTime ?? DateTime.now();
+        dateTime = DateTime(
+          draft.date!.year,
+          draft.date!.month,
+          draft.date!.day,
+          existing.hour,
+          existing.minute,
+        );
+        VoiceInputLog.d('addPage.apply.date', {
+          'value': dateTime?.toIso8601String(),
+        });
+      }
+    });
+
+    if (draft.noCategory || !draft.hasCategory) {
+      VoiceInputLog.d('addPage.apply.noCategory');
+      setState(() {
+        selectedCategory = null;
+        _value = null;
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('No category'),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.fromLTRB(
+            StitchSpacing.md,
+            0,
+            StitchSpacing.md,
+            StitchSpacing.md,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+      return;
+    }
+
+    final spokenCategory = draft.category!.trim();
+    final matched = VoiceTransactionParser.matchKnownCategory(
+      spokenCategory,
+      avlC,
+    );
+    VoiceInputLog.d('addPage.apply.categoryMatch', {
+      'spoken': spokenCategory,
+      'matched': matched,
+    });
+    if (matched != null) {
+      setState(() {
+        selectedCategory = matched;
+        _value = avlC.indexOf(matched);
+      });
+      return;
+    }
+
+    if (!mounted) return;
+    VoiceInputLog.d('addPage.apply.askCreateCategory', {
+      'spoken': spokenCategory,
+    });
+    final displayName = _capitalizeWords(spokenCategory);
+    await StitchConfirmationDialog.show(
+      context: context,
+      title: 'Create category?',
+      message:
+          '"$displayName" isn’t in your list yet. Create it as a new category?',
+      icon: Icons.category_outlined,
+      secondaryLabel: 'Skip',
+      primaryLabel: 'Create',
+      onPrimary: () => _createCategoryFromVoice(spokenCategory),
+      onSecondary: () {
+        VoiceInputLog.d('addPage.apply.createCategory.skipped');
+        if (!mounted) return;
+        setState(() {
+          selectedCategory = null;
+          _value = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('No category'),
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.fromLTRB(
+              StitchSpacing.md,
+              0,
+              StitchSpacing.md,
+              StitchSpacing.md,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _createCategoryFromVoice(String rawName) {
+    VoiceInputLog.d('addPage.createCategory', {'raw': rawName});
+    final name = _capitalizeWords(rawName);
+    final stored = '✨ $name';
+    final exists = avlC.any(
+      (c) => CategoryUtils.parseCategoryStorage(c).name.toLowerCase() ==
+          name.toLowerCase(),
+    );
+    if (exists) {
+      final existing = avlC.firstWhere(
+        (c) =>
+            CategoryUtils.parseCategoryStorage(c).name.toLowerCase() ==
+            name.toLowerCase(),
+      );
+      VoiceInputLog.d('addPage.createCategory.exists', {'value': existing});
+      setState(() {
+        selectedCategory = existing;
+        _value = avlC.indexOf(existing);
+      });
+      return;
+    }
+
+    setState(() {
+      avlC = [...avlC, stored];
+      hive.setCategory(avlC);
+      selectedCategory = stored;
+      _value = avlC.length - 1;
+    });
+    VoiceInputLog.d('addPage.createCategory.created', {
+      'stored': stored,
+      'totalCategories': avlC.length,
+    });
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'We recommend only $_recommendedCategoryLimit categories to keep things more tidy.',
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.fromLTRB(
+          StitchSpacing.md,
+          0,
+          StitchSpacing.md,
+          StitchSpacing.md,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  String _capitalizeWords(String value) {
+    return value
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .map((part) => part[0].toUpperCase() + part.substring(1))
+        .join(' ');
+  }
+
   void _submitForm() async {
     if (_amountText.isEmpty || double.tryParse(_amountText) == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -210,11 +413,19 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         ),
         centerTitle: true,
       ),
+      floatingActionButton: StitchFab(
+        heroTag: 'add_transaction_voice_fab',
+        icon: Icons.mic_rounded,
+        label: 'Voice',
+        tooltip: 'Fill form with voice',
+        onPressed: _openVoiceInput,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Form(
         key: _formKey,
         child: ListView(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.paddingOf(context).bottom + StitchSpacing.md,
+            bottom: MediaQuery.paddingOf(context).bottom + 96,
           ),
           children: [
             Padding(
@@ -222,25 +433,25 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 horizontal: context.stitchSpacing.gutter,
               ),
               child: SegmentedButton<TypeEI>(
-              segments: const [
-                ButtonSegment<TypeEI>(
-                  value: TypeEI.expense,
-                  label: Text('Expense'),
-                  icon: Icon(Icons.remove_circle_outline),
-                ),
-                ButtonSegment<TypeEI>(
-                  value: TypeEI.income,
-                  label: Text('Income'),
-                  icon: Icon(Icons.add_circle_outline),
-                ),
-              ],
-              selected: selectedAccessories,
-              onSelectionChanged: (selection) {
-                setState(() {
-                  selectedAccessories = selection;
-                  selectedIndex = selection.first;
-                });
-              },
+                segments: const [
+                  ButtonSegment<TypeEI>(
+                    value: TypeEI.expense,
+                    label: Text('Expense'),
+                    icon: Icon(Icons.remove_circle_outline),
+                  ),
+                  ButtonSegment<TypeEI>(
+                    value: TypeEI.income,
+                    label: Text('Income'),
+                    icon: Icon(Icons.add_circle_outline),
+                  ),
+                ],
+                selected: selectedAccessories,
+                onSelectionChanged: (selection) {
+                  setState(() {
+                    selectedAccessories = selection;
+                    selectedIndex = selection.first;
+                  });
+                },
               ),
             ),
             const SizedBox(height: StitchSpacing.md),

@@ -1,4 +1,4 @@
-# Firebase setup — FinTrack (`zenspend-af9c2`)
+# Firebase setup — MoneySeer (`zenspend-af9c2`)
 
 This guide lists everything to enable in [Firebase Console](https://console.firebase.google.com/project/zenspend-af9c2) so **Crashlytics**, **app updates**, and **legal documents** work.
 
@@ -63,7 +63,7 @@ This creates `firebase/remote_config_template.json`. In Firebase Console:
 | `min_version_ios` | String | `1.0.1` | **Force** update if installed version is lower (iOS) |
 | `latest_version` | String | `1.0.1` | Latest store version |
 | `force_update` | Boolean | `false` | If `true`, users below `latest_version` must update |
-| `update_message` | String | `A new version of FinTrack is available.` | Shown in update dialog |
+| `update_message` | String | `A new version of MoneySeer is available.` | Shown in update dialog |
 | `play_store_url` | String | `https://play.google.com/store/apps/details?id=com.zenspend.app` | Android store link |
 | `app_store_url` | String | Your App Store URL | iOS store link |
 
@@ -77,8 +77,8 @@ This creates `firebase/remote_config_template.json`. In Firebase Console:
 |-----------|------|---------|---------|
 | `privacy_policy` | String | Full text (see bundled default) | In-app Privacy Policy |
 | `terms_of_service` | String | Full text (see bundled default) | In-app Terms of Service |
-| `privacy_policy_updated` | String | `July 12, 2026` | “Last updated” label |
-| `terms_of_service_updated` | String | `July 12, 2026` | “Last updated” label |
+| `privacy_policy_updated` | String | `October 2, 2026` | “Last updated” label |
+| `terms_of_service_updated` | String | `October 2, 2026` | “Last updated” label |
 | `support_email` | String | `hello@cyfur.in` | Support contact |
 
 **Editing legal text:** Update the string in Remote Config → **Publish**. Users get new text on next app launch (or pull-to-refresh on the legal screen). No app store release required.

@@ -27,7 +27,7 @@ class SavingsCoachService {
       'Give 3 concrete actions.';
 
   static const String _instructions =
-      'You are FinTrack, a private on-device savings coach. '
+      'You are MoneySeer, a private on-device savings coach. '
       'Use ONLY the provided spending context. Do not invent transactions. '
       'Be concise: 3 short actionable bullets. No fluff, no markdown tables. '
       'Speak directly to the user. Prefer cutting the biggest discretionary leak.';

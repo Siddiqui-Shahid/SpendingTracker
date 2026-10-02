@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Stitch / FinTrack M3 color tokens from the active design project.
+/// Stitch / MoneySeer M3 color tokens from the active design project.
 abstract final class StitchColors {
   static const Color seed = Color(0xFFD0BCFF);
 

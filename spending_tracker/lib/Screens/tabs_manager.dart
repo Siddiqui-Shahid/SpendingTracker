@@ -185,47 +185,47 @@ class _TabsManager extends State<TabsManager> {
   }
 
   Widget _buildMainShell() {
-    return Consumer<ExpenseData>(
-      builder: (context, expenseData, _) {
-        final balance = expenseData.getBalance();
-
-        return StitchNavigationShell(
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: (index) {
-            setState(() => _selectedIndex = index);
-          },
-          destinations: [
-            StitchNavDestination(
-              label: 'Home',
-              icon: Icons.home_outlined,
-              selectedIcon: Icons.home_rounded,
-              body: DashboardScreen(
-                onViewAll: () => setState(() => _selectedIndex = 1),
-                onBalanceLongPress: () => _openBalanceOverview(balance),
-                onAddTransaction: _openAddTransaction,
-              ),
-            ),
-            const StitchNavDestination(
-              label: 'History',
-              icon: Icons.receipt_long_outlined,
-              selectedIcon: Icons.receipt_long_rounded,
-              body: TransactionHistoryScreen(),
-            ),
-            const StitchNavDestination(
-              label: 'Insights',
-              icon: Icons.bar_chart_outlined,
-              selectedIcon: Icons.bar_chart_rounded,
-              body: AnalysisScreen(),
-            ),
-            StitchNavDestination(
-              label: AppStrings.settings,
-              icon: Icons.settings_outlined,
-              selectedIcon: Icons.settings_rounded,
-              body: Settings(asTab: true),
-            ),
-          ],
-        );
+    return StitchNavigationShell(
+      selectedIndex: _selectedIndex,
+      onDestinationSelected: (index) {
+        setState(() => _selectedIndex = index);
       },
+      destinations: [
+        StitchNavDestination(
+          label: 'Home',
+          icon: Icons.home_outlined,
+          selectedIcon: Icons.home_rounded,
+          body: DashboardScreen(
+            onViewAll: () => setState(() => _selectedIndex = 1),
+            onBalanceLongPress: () {
+              final balance = Provider.of<ExpenseData>(
+                context,
+                listen: false,
+              ).getBalance();
+              _openBalanceOverview(balance);
+            },
+            onAddTransaction: _openAddTransaction,
+          ),
+        ),
+        const StitchNavDestination(
+          label: 'History',
+          icon: Icons.receipt_long_outlined,
+          selectedIcon: Icons.receipt_long_rounded,
+          body: TransactionHistoryScreen(),
+        ),
+        const StitchNavDestination(
+          label: 'Insights',
+          icon: Icons.bar_chart_outlined,
+          selectedIcon: Icons.bar_chart_rounded,
+          body: AnalysisScreen(),
+        ),
+        StitchNavDestination(
+          label: AppStrings.settings,
+          icon: Icons.settings_outlined,
+          selectedIcon: Icons.settings_rounded,
+          body: Settings(asTab: true),
+        ),
+      ],
     );
   }
 

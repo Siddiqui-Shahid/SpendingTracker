@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'FinTrack';
+  String get appTitle => 'MoneySeer';
 
   @override
   String get settings => 'Settings';
@@ -39,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateNow => 'Update';
 
   @override
-  String get onboardingWelcomeTitle => 'Welcome to FinTrack';
+  String get onboardingWelcomeTitle => 'Welcome to MoneySeer';
 
   @override
   String get onboardingWelcomeBody =>
@@ -50,7 +50,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingBiometricBody =>
-      'Lock FinTrack with fingerprint or face recognition so only you can open your finances.';
+      'Lock MoneySeer with fingerprint or face recognition so only you can open your finances.';
 
   @override
   String get getStarted => 'Get started';

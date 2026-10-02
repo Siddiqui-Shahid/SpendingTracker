@@ -54,6 +54,7 @@ class HiveDataBase {
     // Set default settings (adjust as needed)
     await _myBox.put("Settings", 0);
     await _myBox.put("FingerprintEnabled", 0);
+    await _myBox.put("ThemeMode", 0); // 0 = system/auto
     // Remove all expenses
     await _myBox.put("All Expenses", []);
     if (seedComplete == true) {
@@ -71,7 +72,17 @@ class HiveDataBase {
     return _myBox.get("FingerprintEnabled") ?? 0;
   }
 
-  final _myBox = Hive.box("expense_database");
+  /// Persists theme mode: 0 = system/auto, 1 = light, 2 = dark.
+  void saveThemeMode(int mode) {
+    _myBox.put("ThemeMode", mode);
+  }
+
+  /// Returns theme mode: 0 = system/auto, 1 = light, 2 = dark.
+  int getThemeMode() {
+    return _myBox.get("ThemeMode") ?? 0;
+  }
+
+  Box get _myBox => Hive.box("expense_database");
 
   void saveData(List<ExpenseItem> allExpense) {
     List<List<dynamic>> allExpensesFormatted = [];

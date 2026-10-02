@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>FinTrack</string>
+	<string>MoneySeer</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -27,7 +27,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
-	<string>FinTrack uses Face ID to protect your financial data when unlocking the app.</string>
+	<string>MoneySeer uses Face ID to protect your financial data when unlocking the app.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>MoneySeer uses the microphone so you can add expenses and income by voice.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>MoneySeer uses speech recognition to fill transaction details from what you say.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>This app needs access to your files to save and restore backups.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

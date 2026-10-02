@@ -1,4 +1,4 @@
-# Release Build Guide — FinTrack
+# Release Build Guide — MoneySeer
 
 ## Android upload key
 

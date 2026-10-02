@@ -97,7 +97,7 @@ abstract class AppLocalizations {
   /// Application display name
   ///
   /// In en, this message translates to:
-  /// **'FinTrack'**
+  /// **'MoneySeer'**
   String get appTitle;
 
   /// No description provided for @settings.
@@ -157,7 +157,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to FinTrack'**
+  /// **'Welcome to MoneySeer'**
   String get onboardingWelcomeTitle;
 
   /// No description provided for @onboardingWelcomeBody.
@@ -175,7 +175,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingBiometricBody.
   ///
   /// In en, this message translates to:
-  /// **'Lock FinTrack with fingerprint or face recognition so only you can open your finances.'**
+  /// **'Lock MoneySeer with fingerprint or face recognition so only you can open your finances.'**
   String get onboardingBiometricBody;
 
   /// No description provided for @getStarted.

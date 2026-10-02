@@ -2,3 +2,4 @@
 library;
 
 export 'stitch_theme.dart';
+export 'theme_controller.dart';

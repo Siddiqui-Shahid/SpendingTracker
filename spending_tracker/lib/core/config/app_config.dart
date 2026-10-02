@@ -3,7 +3,7 @@ import 'ad_config.dart';
 
 /// App-wide constants for store listings, legal pages, and support.
 abstract final class AppConfig {
-  static const String appName = 'FinTrack';
+  static const String appName = 'MoneySeer';
   static const String packageName = 'com.zenspend.app';
 
   static const String supportEmail = 'hello@cyfur.in';
@@ -43,10 +43,10 @@ abstract final class AppConfig {
   static Map<String, dynamic> get remoteConfigDefaults => {
         rcMinVersionAndroid: '1.0.1',
         rcMinVersionIos: '1.0.1',
-        rcLatestVersion: '1.0.1',
+        rcLatestVersion: '1.0.3',
         rcForceUpdate: false,
         rcUpdateMessage:
-            'A new version of FinTrack is available. Please update for the best experience.',
+            'A new version of MoneySeer is available. Please update for the best experience.',
         rcPlayStoreUrl: playStoreUrl,
         rcAppStoreUrl: appStoreUrl,
         rcSupportEmail: supportEmail,
