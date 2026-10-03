@@ -114,11 +114,12 @@ jobs:
           : "${KEY_PASSWORD:?Missing GitHub secret ANDROID_KEY_PASSWORD}"
           : "${PLAY_SERVICE_ACCOUNT:?Missing GitHub secret PLAY_STORE_SERVICE_ACCOUNT_JSON}"
           printf '%s' "$KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          test -s android/upload-keystore.jks
           {
             printf 'storePassword=%s\n' "$STORE_PASSWORD"
             printf 'keyPassword=%s\n' "$KEY_PASSWORD"
             printf 'keyAlias=%s\n' "$KEY_ALIAS"
-            printf 'storeFile=upload-keystore.jks\n'
+            printf 'storeFile=%s\n' "$PWD/android/upload-keystore.jks"
           } > android/key.properties
 
       - name: Build signed app bundle
@@ -139,7 +140,7 @@ jobs:
       - name: Preserve release bundle
         uses: actions/upload-artifact@v4
         with:
-          name: fintrack-${{ steps.version.outputs.tag }}
+          name: moneyseer-${{ steps.version.outputs.tag }}
           path: spending_tracker/build/app/outputs/bundle/release/app-release.aab
           if-no-files-found: error
 
